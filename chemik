@@ -1,0 +1,25 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package komunikaator;
+
+/**
+ * 
+ *
+ * @author Mac
+ */
+public class chemik {
+    int srodek_x=300;
+    int srodek_y=300;
+    public int rozmiar_glowy=20;
+    
+    static int rozmiar_ciała=50;
+    static int odleglosc_głowy_od_srodka=10;
+    static int rozmiar_guzika=4;
+    static int odstep_guzikow=10;
+    
+    chemik (){;}
+}
+
