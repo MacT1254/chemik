@@ -1,0 +1,104 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package projekt;
+
+/**
+ *
+ * @author Mac
+ */
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+ 
+public class glowny  
+{  
+  public glowny()  
+  {  
+    Frame f= new Frame("Canvas Example");  
+    f.add(new MyCanvas());  
+    f.setLayout(null);  
+    f.setSize(400, 400);  
+    f.setVisible(true);  
+    chemik Mando=new chemik();
+    System.out.println("srodek_x"+Mando.srodek_x);
+  }  
+  public static void main(String args[])  
+  {  
+    new glowny(); 
+    
+  }  
+}  
+class MyCanvas extends Canvas  
+{  
+        public MyCanvas() {  
+        setBackground (Color.GRAY);  
+        setSize(300, 200);  
+     }  
+  public void paint(Graphics g)  
+  {  
+    g.setColor(Color.red);  
+    g.fillOval(Mando.rozmiar_ciała, 75, 150, 75);  
+  }  
+}    
+/*srodek_y
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+//package komunikaator;
+
+/**
+ *
+ * @author Mac
+ */
+/*import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+class Ekran extends Canvas{
+public String s="Witam";
+private Font f;
+Ekran (){
+super();
+f = new Font("Times New Roman",Font.BOLD,20);
+setFont(f);
+addKeyListener(new KeyAdapter(){
+public void keyPressed(KeyEvent ke){
+s=ke.paramString();
+repaint();
+}
+});
+addMouseListener(new MouseAdapter(){
+public void mousePressed(MouseEvent me){
+s=me.paramString();
+repaint();
+}
+});
+}
+public void paint(Graphics g){
+g.drawString(s,20,220);
+}
+}
+public class Komunikaator extends JFrame {
+Komunikaator (String nazwa){
+super(nazwa);
+setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+}
+public static void main(String args[]){
+Komunikaator okno = new Komunikaator("Komunikator");
+okno.setSize(600,500);
+Ekran e = new Ekran();
+okno.add(e);
+okno.addWindowListener(new WindowAdapter(){
+ public void windowClosing(WindowEvent e){
+ System.out.println("Dziękujemy za pracę...");
+ }
+ });
+//okno.setVisible(true);
+}
+}// koniec public class Komunikator
+*/
