@@ -13,6 +13,7 @@ package projekt;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.imageio.*;
  
 public class glowny  
 {  
@@ -23,13 +24,13 @@ public class glowny
     f.setLayout(null);  
     f.setSize(400, 400);  
     f.setVisible(true);  
-    chemik Mando=new chemik();
-    System.out.println("srodek_x"+Mando.srodek_x);
+    
   }  
   public static void main(String args[])  
   {  
     new glowny(); 
-    
+    chemik Mando=new chemik();
+    System.out.println("srodek_x"+Mando.srodek_x);
   }  
 }  
 class MyCanvas extends Canvas  
@@ -41,7 +42,7 @@ class MyCanvas extends Canvas
   public void paint(Graphics g)  
   {  
     g.setColor(Color.red);  
-    g.fillOval(Mando.rozmiar_ciała, 75, 150, 75);  
+    g.fillOval(0, 75, 150, 75);  
   }  
 }    
 /*srodek_y
