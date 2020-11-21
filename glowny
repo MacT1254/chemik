@@ -17,138 +17,16 @@ import java.awt.*;
 import java.util.ArrayList;
 
  
-public class glowny  extends JFrame
-{  chemik mando= new chemik(30,30);
-   ArrayList<stanowiska> stoly = new ArrayList<>();
-   int odl,odlx,odly;
-   static int odl_min=65000;
-   public String s="Witam";
-  public glowny()  
-          
-  {  
-    
-     super("glowny");
-     
-     stanowiska stol_z_papierami=new stanowiska(120,40);
-     stoly.add(stol_z_papierami);
-     
-     setSize(1024, 768);  
-     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-     
-     addKeyListener(new KeyAdapter(){
-     public void keyPressed(KeyEvent ke){
-     if(ke.getKeyCode()==ke.VK_RIGHT){
-         System.out.println("RIGHT"+mando.srodek_x);
-         mando.srodek_x+=10;
-         repaint();
-     }
-     if(ke.getKeyCode()==ke.VK_LEFT){
-        System.out.println("LEFT"+mando.srodek_x);
-        mando.srodek_x-=10;
-        repaint();
-     };
-     if(ke.getKeyCode()==ke.VK_UP){
-         System.out.println("UP"+mando.srodek_y);
-         mando.srodek_y-=10;
-         repaint();
-     }
-     if(ke.getKeyCode()==ke.VK_DOWN){
-         System.out.println("down"+mando.srodek_y);
-         mando.srodek_y+=10;
-         repaint();
-     }
-      if(ke.getKeyCode()==ke.VK_M){
-         for(int m=0; m < stoly.size(); m++){
-             odlx=(mando.srodek_x-stoly.get(m).run_point_x);
-             odly=(mando.srodek_y-stoly.get(m).run_point_y);
-             odl=odlx*odlx+odly*odly;
-             if(odl<odl_min){
-              System.out.println("lmao "+odl+" mandox "+mando.srodek_x+" mandoy "+mando.srodek_y+" runx "+stoly.get(m).run_point_x+" runy"+stoly.get(m).run_point_y);
-             }
-             
-             else System.out.println(":(");
-         }
-         repaint();
-     }
-     ;}
-     });
-    
-    
-  }  
-  public static void main(String args[])  
-  {  glowny f= new glowny();  
+public class Główny
+{  
+   
+
+public static void main(String args[])  
+  {  Gra nowagra= new Gra();  
   
-     f.setVisible(true);
+     nowagra.setVisible(true);
      
      
   }  
-  
- 
 
-    
-    
-    public void paint (Graphics g) {
-           
-            int wciecieod=5;
-            int odst=13;
-            obiekty stolA=new obiekty(0, 0, 390, 150);
-            obiekty papier=new obiekty(120, 40, 32, 48);
-            obiekty linia= new obiekty(0,0,20,1);
-            Graphics2D g2 = (Graphics2D) g;
-            
-            g2.setColor(Color.white);                   //tło
-            g2.fillRect(0,0, 1024, 768);
-            
-            g2.setColor(Color.black);
-            g2.drawRect(stolA.x,stolA.y,stolA.w,stolA.h );         //stanowisko do wypełniania formuł chemicznych
-            g2.drawRect(stolA.x,stolA.y,stolA.w,stolA.h );
-            System.out.println(stolA.x);
-        
-            for (int i=0; i<3;i++){                       //kartki
-                g2.drawRect(papier.x+odst*i,papier.y+odst*i, papier.w, papier.h);
-                g2.setColor(Color.white);
-                g2.fillRect(papier.x+odst*i+1,papier.y+odst*i+1, papier.w-1, papier.h-1);
-            
-                for (int k=0; k<3;k++){
-                    g2.setColor(Color.black);
-                    g2.drawLine(papier.x+wciecieod+odst*i, papier.y+k*10+2*wciecieod+odst*i, papier.x+papier.w-wciecieod+odst*i, papier.y+k*10+2*wciecieod+odst*i);
-                }
-            }
-        
-           //rysowanie chemika
-           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y, chemik.rozmiar_ciała);
-           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y-chemik.odleglosc_głowy_od_srodka, chemik.rozmiar_głowy);
-           drawCenteredCircle(g2,1,2,3);
-           
-           for (int l=0; l<3;l++){
-                 drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y+l*chemik.odstep_guzikow, chemik.rozmiar_guzika); 
-           }
-           
-          
-           
-           
-   
 }
-    
-   
-    
-     public void drawCenteredCircle(Graphics2D g, int x, int y, int r) {
-        x = x-(r/2);
-        y = y-(r/2);
-        g.drawOval(x,y,r,r);
-        
-    }
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-}
-
