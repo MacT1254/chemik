@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package komunikaator;
+package projekt;
 
 /**
  * 
@@ -13,13 +13,15 @@ package komunikaator;
 public class chemik {
     int srodek_x=300;
     int srodek_y=300;
-    public int rozmiar_glowy=20;
+    static int rozmiar_głowy=60;
     
-    static int rozmiar_ciała=50;
-    static int odleglosc_głowy_od_srodka=10;
-    static int rozmiar_guzika=4;
-    static int odstep_guzikow=10;
+    static int rozmiar_ciała=150;
+    static int odleglosc_głowy_od_srodka=45;
+    static int rozmiar_guzika=9;
+    static int odstep_guzikow=24;
     
-    chemik (){;}
+    chemik (int srodek_x,int srodek_y){
+        srodek_x=this.srodek_x;
+        srodek_y=this.srodek_y;}
 }
 
