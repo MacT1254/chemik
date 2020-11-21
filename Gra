@@ -1,0 +1,201 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package projekt;
+
+/**
+ *
+ * @author Mac
+ */
+import javax.swing.*;
+import java.awt.geom.*;
+import java.awt.event.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+ 
+public class Gra  extends JFrame
+{  Postac mando= new Postac(30,30);
+   ArrayList<Stanowisko> lista_stan = new ArrayList<>();
+   ArrayList<Obiekt> lista_obiekt = new ArrayList<>();
+   int odl,odlx,odly;
+   static int odl_min=65000;
+   int krok_chodz=10;
+   
+   
+public Gra(){  
+    
+    super("glowny");
+     
+    Stanowisko stol_z_papierami=new Stanowisko(120,40);
+    lista_stan.add(stol_z_papierami);
+     
+    setSize(1024, 768);  
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    //tworzenie obiektów
+    Obiekt stolA=new Obiekt(0, 0, 390, 150);
+    Obiekt papier=new Obiekt(120, 40, 32, 48);
+    Obiekt linia= new Obiekt(0,0,20,1);
+    lista_obiekt.add(stolA);
+    lista_obiekt.add(papier);
+    lista_obiekt.add(linia);
+     
+    addKeyListener(new KeyAdapter(){
+         
+        public void keyPressed(KeyEvent ke){
+
+           if(ke.getKeyCode()==ke.VK_RIGHT){
+                
+                if(sprawdzkolizje(false,false,false,true)){
+                    System.out.println("kolizja"+mando.srodek_y);
+                }
+               
+               else { 
+                    System.out.println("right"+mando.srodek_y);
+                    mando.srodek_x+=krok_chodz;
+                    repaint();
+               }
+           }
+           
+           if(ke.getKeyCode()==ke.VK_LEFT){
+                
+                if(sprawdzkolizje(false,false,true,false)){
+                    System.out.println("kolizja"+mando.srodek_y);
+                }
+               
+                else { 
+                    System.out.println("left"+mando.srodek_y);
+                    mando.srodek_x-=krok_chodz;
+                    repaint();
+               }
+           }
+           
+           if(ke.getKeyCode()==ke.VK_UP){
+               
+               if(sprawdzkolizje(true,false,false,false)){
+                    System.out.println("kolizja"+mando.srodek_y);
+               }
+               
+               else { 
+                    System.out.println("up"+mando.srodek_y);
+                    mando.srodek_y-=krok_chodz;
+                    repaint();
+               }
+           }
+           
+           if(ke.getKeyCode()==ke.VK_DOWN){
+               
+                if(sprawdzkolizje(false,true,false,false)){
+                    System.out.println("kolizja"+mando.srodek_y);
+                }
+               
+                else { 
+                    System.out.println("down"+mando.srodek_y);
+                    mando.srodek_y+=krok_chodz;
+                    repaint();
+                }
+           }
+           
+           if(ke.getKeyCode()==ke.VK_M){
+               
+                for(int m=0; m < lista_stan.size(); m++){
+                   odlx=(mando.srodek_x-lista_stan.get(m).run_point_x);
+                   odly=(mando.srodek_y-lista_stan.get(m).run_point_y);
+                   odl=odlx*odlx+odly*odly;
+
+                   if(odl<odl_min){
+                        System.out.println(":) "+odl+" mandox "+mando.srodek_x+" mandoy "+mando.srodek_y+" runx "+lista_stan.get(m).run_point_x+" runy"+lista_stan.get(m).run_point_y);
+                   }
+
+                   else System.out.println(":(");
+               }
+                
+               repaint();
+           }
+        }
+    });//hmmmmmmmmmmmmmmmmmmmmmmmmmm
+    
+    
+  }  
+
+  
+ 
+
+    
+    
+    public void paint (Graphics g) {
+           
+            int wciecieod=5;
+            int odst=13;
+            Graphics2D g2 = (Graphics2D) g;
+            
+            g2.setColor(Color.white);                   //tło
+            g2.fillRect(0,0, 1024, 768);
+            
+            g2.setColor(Color.black);
+            g2.drawRect(lista_obiekt.get(0).x,lista_obiekt.get(0).y,lista_obiekt.get(0).w,lista_obiekt.get(0).h );         //stanowisko do wypełniania formuł chemicznych
+        
+            for (int i=0; i<3;i++){                       //kartki
+                g2.drawRect(lista_obiekt.get(1).x+odst*i,lista_obiekt.get(1).y+odst*i, lista_obiekt.get(1).w, lista_obiekt.get(1).h);
+                g2.setColor(Color.white);
+                g2.fillRect(lista_obiekt.get(1).x+odst*i+1,lista_obiekt.get(1).y+odst*i+1, lista_obiekt.get(1).w-1, lista_obiekt.get(1).h-1);
+            
+                for (int k=0; k<3;k++){
+                    g2.setColor(Color.black);
+                    g2.drawLine(lista_obiekt.get(1).x+wciecieod+odst*i, lista_obiekt.get(1).y+k*10+2*wciecieod+odst*i, lista_obiekt.get(1).x+lista_obiekt.get(1).w-wciecieod+odst*i, lista_obiekt.get(1).y+k*10+2*wciecieod+odst*i);
+                }
+            }
+        
+           //rysowanie chemika
+           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y, Postac.rozmiar_ciała);
+           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y-Postac.odleglosc_głowy_od_srodka, Postac.rozmiar_głowy);
+           drawCenteredCircle(g2,1,2,3);
+           
+           for (int l=0; l<3;l++){
+                 drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y+l*Postac.odstep_guzikow, Postac.rozmiar_guzika); 
+           }
+           
+        
+   
+}
+    
+   
+    
+     public void drawCenteredCircle(Graphics2D g, int x, int y, int r) {
+        x = x-(r/2);
+        y = y-(r/2);
+        g.drawOval(x,y,r,r);
+        
+    }
+     
+    public boolean sprawdzkolizje (boolean góra, boolean dół, boolean lewo, boolean prawo){
+         System.out.println("halo kolizja???");
+    
+        if(góra){
+             System.out.println("kolizja gora???");
+            for(int i=0;i<lista_obiekt.size();i++){
+                 if( (lista_obiekt.get(i).wieszcholki_x[2] < mando.srodek_x) && (mando.srodek_x > lista_obiekt.get(i).wieszcholki_x[3] )){
+                     System.out.println("kolizja???");
+                     if( mando.srodek_y-mando.rozmiar_ciała-krok_chodz<lista_obiekt.get(i).wieszcholki_x[3]){
+                         System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_x[3]);
+                         return true;
+                     
+                     }
+                 }
+                     
+                 }
+            }
+        if(dół){}
+        if(lewo){}
+        if(prawo){}
+        return false;
+    }
+    
+     
+     
+}
+
