@@ -21,15 +21,15 @@ public class Gra  extends JFrame
 {  Postac mando= new Postac(30,30);
    ArrayList<Stanowisko> lista_stan = new ArrayList<>();
    ArrayList<Obiekt> lista_obiekt = new ArrayList<>();
-   int odl,odlx,odly;
+   
    static int odl_min=65000;
-   int krok_chodz=10;
+   static int krok_chodz=10;
    
    
 public Gra(){  
     
-    super("glowny");
-     
+    
+
     Stanowisko stol_z_papierami=new Stanowisko(120,40);
     lista_stan.add(stol_z_papierami);
      
@@ -40,9 +40,20 @@ public Gra(){
     Obiekt stolA=new Obiekt(0, 0, 390, 150);
     Obiekt papier=new Obiekt(120, 40, 32, 48);
     Obiekt linia= new Obiekt(0,0,20,1);
+    Obiekt stolB=new Obiekt(300, 300, 390, 150);
+    Obiekt ściana_gor=new Obiekt(0, 0, 1024, 1);
+    Obiekt ściana_dol=new Obiekt(0, 768, 1024, 1);
+    Obiekt ściana_lewo=new Obiekt(0, 0, 1, 768);
+    Obiekt ściana_prawo=new Obiekt(1024, 0, 1, 768);
+    
     lista_obiekt.add(stolA);
     lista_obiekt.add(papier);
     lista_obiekt.add(linia);
+    lista_obiekt.add(stolB);
+    lista_obiekt.add(ściana_gor);
+    lista_obiekt.add(ściana_dol);
+    lista_obiekt.add(ściana_lewo);
+    lista_obiekt.add(ściana_prawo);
      
     addKeyListener(new KeyAdapter(){
          
@@ -101,11 +112,10 @@ public Gra(){
            }
            
            if(ke.getKeyCode()==ke.VK_M){
-               
+               int odl;
                 for(int m=0; m < lista_stan.size(); m++){
-                   odlx=(mando.srodek_x-lista_stan.get(m).run_point_x);
-                   odly=(mando.srodek_y-lista_stan.get(m).run_point_y);
-                   odl=odlx*odlx+odly*odly;
+                    
+                   odl=odlegloscdokwa(mando.srodek_x,mando.srodek_y,lista_stan.get(m).run_point_x,lista_stan.get(m).run_point_y);
 
                    if(odl<odl_min){
                         System.out.println(":) "+odl+" mandox "+mando.srodek_x+" mandoy "+mando.srodek_y+" runx "+lista_stan.get(m).run_point_x+" runy"+lista_stan.get(m).run_point_y);
@@ -138,7 +148,7 @@ public Gra(){
             
             g2.setColor(Color.black);
             g2.drawRect(lista_obiekt.get(0).x,lista_obiekt.get(0).y,lista_obiekt.get(0).w,lista_obiekt.get(0).h );         //stanowisko do wypełniania formuł chemicznych
-        
+            g2.drawRect(lista_obiekt.get(3).x,lista_obiekt.get(3).y,lista_obiekt.get(3).w,lista_obiekt.get(3).h );   
             for (int i=0; i<3;i++){                       //kartki
                 g2.drawRect(lista_obiekt.get(1).x+odst*i,lista_obiekt.get(1).y+odst*i, lista_obiekt.get(1).w, lista_obiekt.get(1).h);
                 g2.setColor(Color.white);
@@ -151,12 +161,12 @@ public Gra(){
             }
         
            //rysowanie chemika
-           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y, Postac.rozmiar_ciała);
-           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y-Postac.odleglosc_głowy_od_srodka, Postac.rozmiar_głowy);
+           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y, Postac.średnica_ciała);
+           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y-Postac.odleglosc_głowy_od_srodka, Postac.średnica_głowy);
            drawCenteredCircle(g2,1,2,3);
            
            for (int l=0; l<3;l++){
-                 drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y+l*Postac.odstep_guzikow, Postac.rozmiar_guzika); 
+                 drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y+l*Postac.odstep_guzikow, Postac.średnica_guzika); 
            }
            
         
@@ -173,28 +183,116 @@ public Gra(){
     }
      
     public boolean sprawdzkolizje (boolean góra, boolean dół, boolean lewo, boolean prawo){
+        
+        int odl_do_kol;
+        int odl_min_od_rogu;
          System.out.println("halo kolizja???");
-    
+        
         if(góra){
-             System.out.println("kolizja gora???");
+            
+            System.out.println("kolizja gora???");
+            
             for(int i=0;i<lista_obiekt.size();i++){
-                 if( (lista_obiekt.get(i).wieszcholki_x[2] < mando.srodek_x) && (mando.srodek_x > lista_obiekt.get(i).wieszcholki_x[3] )){
+                
+                 if( ( lista_obiekt.get(i).wieszcholki_x[2]<( mando.srodek_x))&& (mando.srodek_x < lista_obiekt.get(i).wieszcholki_x[3] )){
                      System.out.println("kolizja???");
-                     if( mando.srodek_y-mando.rozmiar_ciała-krok_chodz<lista_obiekt.get(i).wieszcholki_x[3]){
-                         System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_x[3]);
-                         return true;
+                     
+                     if( mando.srodek_y-mando.średnica_ciała/2-krok_chodz<lista_obiekt.get(i).wieszcholki_y[2]){
+                         if(mando.srodek_y>lista_obiekt.get(i).wieszcholki_y[2]){
+                            System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_y[2]);
+                            return true;
+                         }
                      
                      }
                  }
-                     
-                 }
             }
-        if(dół){}
-        if(lewo){}
-        if(prawo){}
-        return false;
+                 /*
+                 System.out.println("kolizjarog???");
+                 odl_do_kol=odlegloscdokwa(mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[3],lista_obiekt.get(i).wieszcholki_y[3]);
+                 odl_min_od_rogu=mando.średnica_ciała/2*mando.średnica_ciała/2-krok_chodz*krok_chodz;
+                 
+                 if(odl_min_od_rogu>odl_do_kol){
+                     System.out.println("kolizjarog!!!!!!! "+odl_min_od_rogu+" odldokol "+odl_do_kol);
+                    return true;
+                 }
+                   */  
+            
+        }
+        
+        if(dół){
+            System.out.println("kolizja dol???");
+            
+            for(int i=0;i<lista_obiekt.size();i++){
+                
+                 if( ( lista_obiekt.get(i).wieszcholki_x[0]<( mando.srodek_x))&& (mando.srodek_x < lista_obiekt.get(i).wieszcholki_x[1] )){
+                     System.out.println("kolizja???");
+                     
+                     if( mando.srodek_y+mando.średnica_ciała/2+krok_chodz>lista_obiekt.get(i).wieszcholki_y[0]){
+                         if(mando.srodek_y<lista_obiekt.get(i).wieszcholki_y[0]){//jak nie przeszedł jeszcze przez linie
+                            System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_y[0]);
+                            return true;
+                         }
+                     
+                     }
+                 }
+                 
+                 
+                
+                     
+            }
+        }
+        
+
+        if(lewo){
+            System.out.println("kolizja lewo???");
+            
+            for(int i=0;i<lista_obiekt.size();i++){
+                
+                if( ( lista_obiekt.get(i).wieszcholki_y[1]<( mando.srodek_y))&& (mando.srodek_y < lista_obiekt.get(i).wieszcholki_y[3] )){
+                     System.out.println("kolizja???");
+                     
+                    if( mando.srodek_x-mando.średnica_ciała/2-krok_chodz<lista_obiekt.get(i).wieszcholki_x[1]){
+                         if(mando.srodek_x>lista_obiekt.get(i).wieszcholki_x[1]){
+                            System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_x[1]);
+                            return true;
+                         }
+                     
+                    }
+                }
+            }
+        }
+        
+        
+         if(prawo){
+            System.out.println("kolizja prawo???");
+            
+            for(int i=0;i<lista_obiekt.size();i++){
+                
+                if( ( lista_obiekt.get(i).wieszcholki_y[0]<( mando.srodek_y))&& (mando.srodek_y < lista_obiekt.get(i).wieszcholki_y[2] )){
+                     System.out.println("kolizja???");
+                     
+                    if( mando.srodek_x+mando.średnica_ciała/2+krok_chodz>lista_obiekt.get(i).wieszcholki_x[0]){
+                         if(mando.srodek_x<lista_obiekt.get(i).wieszcholki_x[0]){
+                            System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_x[0]);
+                            return true;
+                         }
+                     
+                    }
+                }
+            }
+        }
+        
+    return false;
     }
     
+    
+    
+    
+    public int odlegloscdokwa (int x1,int y1,int x2,int y2){
+        
+        return ((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+        
+    }
      
      
 }
