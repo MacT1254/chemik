@@ -10,17 +10,17 @@ package projekt;
  *
  * @author Mac
  */
-public class chemik {
-    int srodek_x=300;
-    int srodek_y=300;
-    static int rozmiar_głowy=60;
+public class Postac {
+    int srodek_x=5;
+    int srodek_y=5;
+    static int średnica_głowy=60;
     
-    static int rozmiar_ciała=150;
+    static int średnica_ciała=150;
     static int odleglosc_głowy_od_srodka=45;
-    static int rozmiar_guzika=9;
+    static int średnica_guzika=9;
     static int odstep_guzikow=24;
     
-    chemik (int srodek_x,int srodek_y){
+    Postac (int srodek_x,int srodek_y){
         srodek_x=this.srodek_x;
         srodek_y=this.srodek_y;}
 }
