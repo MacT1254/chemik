@@ -11,11 +11,11 @@ package projekt;
  * @author Mac
  */
 import javax.swing.*;
-import java.awt.geom.*;
+
 import java.awt.event.*;
 import java.awt.*;
 import java.util.ArrayList;
-
+import java.awt.image.BufferedImage;
  
 public class Gra  extends JFrame
 {  Postac mando= new Postac(30,30);
@@ -47,14 +47,25 @@ public Gra(){
     Obiekt ściana_prawo=new Obiekt(1024, 0, 1, 768);
     
     lista_obiekt.add(stolA);
-    lista_obiekt.add(papier);
-    lista_obiekt.add(linia);
+    lista_obiekt.add(papier);//do usu
+    lista_obiekt.add(linia);// do usuniecia
     lista_obiekt.add(stolB);
     lista_obiekt.add(ściana_gor);
     lista_obiekt.add(ściana_dol);
     lista_obiekt.add(ściana_lewo);
     lista_obiekt.add(ściana_prawo);
-     
+ 
+    
+   /* try {                
+           myPicture = ImageIO.read(new File("C:\\Users\\Mac\\Documents\\studia\\sem5\\jpwp-projekt\\NetBeansProjects\\Komunikaator\\src\\projekt\\stolA.png"));
+           JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+          add(picLabel);
+      } 
+    catch (IOException ex) {JOptionPane.showMessageDialog(this,
+                   "Could not load images", "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);}*/
+            
+    
     addKeyListener(new KeyAdapter(){
          
         public void keyPressed(KeyEvent ke){
@@ -139,8 +150,7 @@ public Gra(){
     
     public void paint (Graphics g) {
            
-            int wciecieod=5;
-            int odst=13;
+           
             Graphics2D g2 = (Graphics2D) g;
             
             g2.setColor(Color.white);                   //tło
@@ -149,24 +159,14 @@ public Gra(){
             g2.setColor(Color.black);
             g2.drawRect(lista_obiekt.get(0).x,lista_obiekt.get(0).y,lista_obiekt.get(0).w,lista_obiekt.get(0).h );         //stanowisko do wypełniania formuł chemicznych
             g2.drawRect(lista_obiekt.get(3).x,lista_obiekt.get(3).y,lista_obiekt.get(3).w,lista_obiekt.get(3).h );   
-            for (int i=0; i<3;i++){                       //kartki
-                g2.drawRect(lista_obiekt.get(1).x+odst*i,lista_obiekt.get(1).y+odst*i, lista_obiekt.get(1).w, lista_obiekt.get(1).h);
-                g2.setColor(Color.white);
-                g2.fillRect(lista_obiekt.get(1).x+odst*i+1,lista_obiekt.get(1).y+odst*i+1, lista_obiekt.get(1).w-1, lista_obiekt.get(1).h-1);
-            
-                for (int k=0; k<3;k++){
-                    g2.setColor(Color.black);
-                    g2.drawLine(lista_obiekt.get(1).x+wciecieod+odst*i, lista_obiekt.get(1).y+k*10+2*wciecieod+odst*i, lista_obiekt.get(1).x+lista_obiekt.get(1).w-wciecieod+odst*i, lista_obiekt.get(1).y+k*10+2*wciecieod+odst*i);
-                }
-            }
+          
         
            //rysowanie chemika
-           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y, Postac.średnica_ciała);
-           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y-Postac.odleglosc_głowy_od_srodka, Postac.średnica_głowy);
+           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y, Postac.srednica_ciala);
+           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y-Postac.odleglosc_glowy_od_srodka, Postac.srednica_glowy);
            drawCenteredCircle(g2,1,2,3);
-           
            for (int l=0; l<3;l++){
-                 drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y+l*Postac.odstep_guzikow, Postac.średnica_guzika); 
+                 drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y+l*Postac.odstep_guzikow, Postac.srednica_guzika); 
            }
            
         
@@ -182,44 +182,55 @@ public Gra(){
         
     }
      
-    public boolean sprawdzkolizje (boolean góra, boolean dół, boolean lewo, boolean prawo){
+    public boolean sprawdzkolizje (boolean gora, boolean dol, boolean lewo, boolean prawo){
+        int odl_do_s=0;
+        int min_do_s=(mando.srednica_ciala/2)*(mando.srednica_ciala/2);
         
-        int odl_do_kol;
-        int odl_min_od_rogu;
-         System.out.println("halo kolizja???");
+         //System.out.println("halo kolizja???");
         
-        if(góra){
+        if(gora){
             
-            System.out.println("kolizja gora???");
+           // System.out.println("kolizja gora???");
             
             for(int i=0;i<lista_obiekt.size();i++){
                 
                  if( ( lista_obiekt.get(i).wieszcholki_x[2]<( mando.srodek_x))&& (mando.srodek_x < lista_obiekt.get(i).wieszcholki_x[3] )){
-                     System.out.println("kolizja???");
+                     //System.out.println("kolizja???");
                      
-                     if( mando.srodek_y-mando.średnica_ciała/2-krok_chodz<lista_obiekt.get(i).wieszcholki_y[2]){
+                     if( mando.srodek_y-mando.srednica_ciala/2-krok_chodz<lista_obiekt.get(i).wieszcholki_y[2]){
                          if(mando.srodek_y>lista_obiekt.get(i).wieszcholki_y[2]){
-                            System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_y[2]);
+                           // System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_y[2]);
                             return true;
                          }
-                     
+                    
                      }
                  }
-            }
-                 /*
-                 System.out.println("kolizjarog???");
-                 odl_do_kol=odlegloscdokwa(mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[3],lista_obiekt.get(i).wieszcholki_y[3]);
-                 odl_min_od_rogu=mando.średnica_ciała/2*mando.średnica_ciała/2-krok_chodz*krok_chodz;
                  
-                 if(odl_min_od_rogu>odl_do_kol){
-                     System.out.println("kolizjarog!!!!!!! "+odl_min_od_rogu+" odldokol "+odl_do_kol);
-                    return true;
+                 else if((mando.srodek_x+mando.srednica_ciala/2>lista_obiekt.get(i).wieszcholki_x[2])&&(mando.srodek_x-mando.srednica_ciala/2<lista_obiekt.get(i).wieszcholki_x[3])){
+                      
+                      odl_do_s=odlegloscdokwa (mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[2],lista_obiekt.get(i).wieszcholki_y[2]);
+                      System.out.println("kolizjarog???? i:"+i+" odl "+odl_do_s+" min "+min_do_s); 
+                      if(odl_do_s <min_do_s){
+                          System.out.println("!!!!!!!!!kolizjarog!!!");
+                          return true;
+                      }
+                         
+                        
+                      else{  
+                          
+                          odl_do_s=odlegloscdokwa(mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[3],lista_obiekt.get(i).wieszcholki_y[3]);
+                          System.out.println("kolizjarog2 i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+                          if ( odl_do_s<min_do_s){
+                              System.out.println("!!!!!!!!!kolizjarog!!!");
+                              return true;
+                          };
+                      }
                  }
-                   */  
-            
+            }
+   
         }
         
-        if(dół){
+        if(dol){
             System.out.println("kolizja dol???");
             
             for(int i=0;i<lista_obiekt.size();i++){
@@ -227,7 +238,7 @@ public Gra(){
                  if( ( lista_obiekt.get(i).wieszcholki_x[0]<( mando.srodek_x))&& (mando.srodek_x < lista_obiekt.get(i).wieszcholki_x[1] )){
                      System.out.println("kolizja???");
                      
-                     if( mando.srodek_y+mando.średnica_ciała/2+krok_chodz>lista_obiekt.get(i).wieszcholki_y[0]){
+                     if( mando.srodek_y+mando.srednica_ciala/2+krok_chodz>lista_obiekt.get(i).wieszcholki_y[0]){
                          if(mando.srodek_y<lista_obiekt.get(i).wieszcholki_y[0]){//jak nie przeszedł jeszcze przez linie
                             System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_y[0]);
                             return true;
@@ -235,10 +246,28 @@ public Gra(){
                      
                      }
                  }
-                 
-                 
-                
-                     
+                 else if((mando.srodek_x+mando.srednica_ciala/2>lista_obiekt.get(i).wieszcholki_x[0])&&(mando.srodek_x-mando.srednica_ciala/2<lista_obiekt.get(i).wieszcholki_x[1])){
+                      
+                      odl_do_s=odlegloscdokwa (mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[0],lista_obiekt.get(i).wieszcholki_y[0]);
+                      System.out.println("kolizjarog???? i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+                      
+                      if(odl_do_s <min_do_s){
+                          System.out.println("!!!!!!!!!kolizjarog!!!");
+                          return true;
+                      }
+                         
+                        
+                      else{  
+                          
+                          odl_do_s=odlegloscdokwa(mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[1],lista_obiekt.get(i).wieszcholki_y[1]);
+                          System.out.println("kolizjarog2 i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+                          
+                          if ( odl_do_s<min_do_s){
+                              System.out.println("!!!!!!!!!kolizjarog!!!");
+                              return true;
+                          };
+                      }
+                 }
             }
         }
         
@@ -251,7 +280,7 @@ public Gra(){
                 if( ( lista_obiekt.get(i).wieszcholki_y[1]<( mando.srodek_y))&& (mando.srodek_y < lista_obiekt.get(i).wieszcholki_y[3] )){
                      System.out.println("kolizja???");
                      
-                    if( mando.srodek_x-mando.średnica_ciała/2-krok_chodz<lista_obiekt.get(i).wieszcholki_x[1]){
+                    if( mando.srodek_x-mando.srednica_ciala/2-krok_chodz<lista_obiekt.get(i).wieszcholki_x[1]){
                          if(mando.srodek_x>lista_obiekt.get(i).wieszcholki_x[1]){
                             System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_x[1]);
                             return true;
@@ -259,6 +288,29 @@ public Gra(){
                      
                     }
                 }
+                
+                else if((mando.srodek_y+mando.srednica_ciala/2>lista_obiekt.get(i).wieszcholki_y[1])&&(mando.srodek_y-mando.srednica_ciala/2<lista_obiekt.get(i).wieszcholki_y[3])){
+                      
+                      odl_do_s=odlegloscdokwa (mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[1],lista_obiekt.get(i).wieszcholki_y[1]);
+                      System.out.println("kolizjarog???? i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+                      
+                      if(odl_do_s <min_do_s){
+                          System.out.println("!!!!!!!!!kolizjarog!!!");
+                          return true;
+                      }
+                         
+                        
+                      else{  
+                          
+                          odl_do_s=odlegloscdokwa(mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[3],lista_obiekt.get(i).wieszcholki_y[3]);
+                          System.out.println("kolizjarog2 i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+                          
+                          if ( odl_do_s<min_do_s){
+                              System.out.println("!!!!!!!!!kolizjarog!!!");
+                              return true;
+                          };
+                      }
+                 }
             }
         }
         
@@ -271,7 +323,7 @@ public Gra(){
                 if( ( lista_obiekt.get(i).wieszcholki_y[0]<( mando.srodek_y))&& (mando.srodek_y < lista_obiekt.get(i).wieszcholki_y[2] )){
                      System.out.println("kolizja???");
                      
-                    if( mando.srodek_x+mando.średnica_ciała/2+krok_chodz>lista_obiekt.get(i).wieszcholki_x[0]){
+                    if( mando.srodek_x+mando.srednica_ciala/2+krok_chodz>lista_obiekt.get(i).wieszcholki_x[0]){
                          if(mando.srodek_x<lista_obiekt.get(i).wieszcholki_x[0]){
                             System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).wieszcholki_x[0]);
                             return true;
@@ -279,6 +331,28 @@ public Gra(){
                      
                     }
                 }
+                else if((mando.srodek_y+mando.srednica_ciala/2>lista_obiekt.get(i).wieszcholki_y[0])&&(mando.srodek_y-mando.srednica_ciala/2<lista_obiekt.get(i).wieszcholki_y[2])){
+                      
+                      odl_do_s=odlegloscdokwa (mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[0],lista_obiekt.get(i).wieszcholki_y[0]);
+                      System.out.println("kolizjarog???? i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+                      
+                      if(odl_do_s <min_do_s){
+                          System.out.println("!!!!!!!!!kolizjarog!!!");
+                          return true;
+                      }
+                         
+                        
+                      else{  
+                          
+                          odl_do_s=odlegloscdokwa(mando.srodek_x,mando.srodek_y,lista_obiekt.get(i).wieszcholki_x[2],lista_obiekt.get(i).wieszcholki_y[2]);
+                          System.out.println("kolizjarog2 i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+                          
+                          if ( odl_do_s<min_do_s){
+                              System.out.println("!!!!!!!!!kolizjarog!!!");
+                              return true;
+                          };
+                      }
+                 }
             }
         }
         
