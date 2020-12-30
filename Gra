@@ -16,8 +16,11 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
  
-public class Gra  extends JFrame
+public class Gra
 {  Postac mando= new Postac(30,30);
    ArrayList<Stanowisko> lista_stan = new ArrayList<>();
    ArrayList<Obiekt> lista_obiekt = new ArrayList<>();
@@ -29,12 +32,12 @@ public class Gra  extends JFrame
 public Gra(){  
     
     
-
+    Okno okno_gr=new Okno("Gra: Chemik");
     Stanowisko stol_z_papierami=new Stanowisko(120,40);
     lista_stan.add(stol_z_papierami);
      
-    setSize(1024, 768);  
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    
     
     //tworzenie obiektów
     Obiekt stolA=new Obiekt(0, 0, 390, 150);
@@ -54,19 +57,17 @@ public Gra(){
     lista_obiekt.add(ściana_dol);
     lista_obiekt.add(ściana_lewo);
     lista_obiekt.add(ściana_prawo);
- 
-    
-   /* try {                
-           myPicture = ImageIO.read(new File("C:\\Users\\Mac\\Documents\\studia\\sem5\\jpwp-projekt\\NetBeansProjects\\Komunikaator\\src\\projekt\\stolA.png"));
-           JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-          add(picLabel);
-      } 
-    catch (IOException ex) {JOptionPane.showMessageDialog(this,
-                   "Could not load images", "Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(1);}*/
+   /* try{
+           okno_gr.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("src/res/tlo0.jpg")))));
+    }
             
+    catch(IOException e){
+            System.out.println("error_tlo0");
+    }
+    */
     
-    addKeyListener(new KeyAdapter(){
+ 
+    okno_gr.addKeyListener(new KeyAdapter(){
          
         public void keyPressed(KeyEvent ke){
 
@@ -79,7 +80,7 @@ public Gra(){
                else { 
                     System.out.println("right"+mando.srodek_y);
                     mando.srodek_x+=krok_chodz;
-                    repaint();
+                    okno_gr.repaint();
                }
            }
            
@@ -92,7 +93,7 @@ public Gra(){
                 else { 
                     System.out.println("left"+mando.srodek_y);
                     mando.srodek_x-=krok_chodz;
-                    repaint();
+                    okno_gr.repaint();
                }
            }
            
@@ -105,7 +106,7 @@ public Gra(){
                else { 
                     System.out.println("up"+mando.srodek_y);
                     mando.srodek_y-=krok_chodz;
-                    repaint();
+                    okno_gr.repaint();
                }
            }
            
@@ -118,7 +119,7 @@ public Gra(){
                 else { 
                     System.out.println("down"+mando.srodek_y);
                     mando.srodek_y+=krok_chodz;
-                    repaint();
+                    okno_gr.repaint();
                 }
            }
            
@@ -130,17 +131,18 @@ public Gra(){
 
                    if(odl<odl_min){
                         System.out.println(":) "+odl+" mandox "+mando.srodek_x+" mandoy "+mando.srodek_y+" runx "+lista_stan.get(m).run_point_x+" runy"+lista_stan.get(m).run_point_y);
+                        
                    }
 
                    else System.out.println(":(");
                }
                 
-               repaint();
+               okno_gr.repaint();
            }
         }
     });//hmmmmmmmmmmmmmmmmmmmmmmmmmm
     
-    
+    okno_gr.setVisible(true);
   }  
 
   
@@ -151,23 +153,24 @@ public Gra(){
     public void paint (Graphics g) {
            
            
-            Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g;
+        /*
+        g2.setColor(Color.white);                   //tło
+        g2.fillRect(0,0, 1024, 768);
+        */
+        g2.setColor(Color.black);
+        g2.drawRect(lista_obiekt.get(0).x,lista_obiekt.get(0).y,lista_obiekt.get(0).w,lista_obiekt.get(0).h );         //stanowisko do wypełniania formuł chemicznych
+        g2.drawRect(lista_obiekt.get(3).x,lista_obiekt.get(3).y,lista_obiekt.get(3).w,lista_obiekt.get(3).h );   
             
-            g2.setColor(Color.white);                   //tło
-            g2.fillRect(0,0, 1024, 768);
-            
-            g2.setColor(Color.black);
-            g2.drawRect(lista_obiekt.get(0).x,lista_obiekt.get(0).y,lista_obiekt.get(0).w,lista_obiekt.get(0).h );         //stanowisko do wypełniania formuł chemicznych
-            g2.drawRect(lista_obiekt.get(3).x,lista_obiekt.get(3).y,lista_obiekt.get(3).w,lista_obiekt.get(3).h );   
-          
         
-           //rysowanie chemika
-           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y, Postac.srednica_ciala);
-           drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y-Postac.odleglosc_glowy_od_srodka, Postac.srednica_glowy);
-           drawCenteredCircle(g2,1,2,3);
-           for (int l=0; l<3;l++){
-                 drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y+l*Postac.odstep_guzikow, Postac.srednica_guzika); 
-           }
+        //rysowanie chemika
+        drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y, Postac.srednica_ciala);
+        drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y-Postac.odleglosc_glowy_od_srodka, Postac.srednica_glowy);
+        drawCenteredCircle(g2,1,2,3);
+
+        for (int l=0; l<3;l++){
+              drawCenteredCircle(g2,mando.srodek_x, mando.srodek_y+l*Postac.odstep_guzikow, Postac.srednica_guzika); 
+        }
            
         
    
