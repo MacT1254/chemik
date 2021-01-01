@@ -11,16 +11,17 @@ package projekt;
  * @author Mac
  */
 public class Postac {
-    int srodek_x=5;
-    int srodek_y=5;
-    static int średnica_głowy=60;
+    int srodek_x=100;
+    int srodek_y=500;
+    //static int srednica_glowy=60;
     
-    static int średnica_ciała=150;
-    static int odleglosc_głowy_od_srodka=45;
-    static int średnica_guzika=9;
-    static int odstep_guzikow=24;
+    static int srednica_ciala=100;
     
-    Postac (int srodek_x,int srodek_y){
+    //static int odleglosc_glowy_od_srodka=45;
+    //static int srednica_guzika=9;
+    //static int odstep_guzikow=24;
+    
+    public Postac (int srodek_x,int srodek_y){
         srodek_x=this.srodek_x;
         srodek_y=this.srodek_y;}
 }
