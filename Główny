@@ -10,21 +10,19 @@ package projekt;
  *
  * @author Mac
  */
-import javax.swing.*;
-import java.awt.geom.*;
-import java.awt.event.*;
-import java.awt.*;
-import java.util.ArrayList;
 
  
-public class Główny
+public class Glowny
 {  
    
 
-public static void main(String args[])  
-  {  Gra nowagra= new Gra();  
-  
-     nowagra.setVisible(true);
+public static void main(String[] args)  
+  {  SilnikGry silnik= new SilnikGry();
+        
+   // Wzory minigra1 = new Wzory();
+   // Roztwory minigra2 = new Roztwory();
+     
+     
      
      
   }  
