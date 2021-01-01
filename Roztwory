@@ -20,14 +20,7 @@ public class Roztwory {
     public Roztwory(){
         Okno okno_roz=new Okno("Roztwory");
           
-        try{
-            BufferedImage myImage = ImageIO.read(new File("src/res/tlo2.jpg"));
-            okno_roz.setContentPane(new Tlo(myImage));}
         
-
-        catch(IOException e){
-            System.out.println("error_tlo2");
-        }
         okno_roz.setVisible(true);
         //action performed mousepressed            
 //getmouse position
