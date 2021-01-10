@@ -17,16 +17,28 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.*;
 import java.lang.Math.*;
+ import java.awt.Graphics;
+ import java.awt.Font;
+ import java.util.Date;
+import javax.swing.Timer;
 
-
-public class Roztwory extends JPanel{
+public class Roztwory extends JPanel
+        implements ActionListener{
+    
+    Timer timer;
+    static final int DELAY=40;
+    
     String tekst1;
     String tekst2;
+    
     boolean [] podniesiono_nacz= new boolean[3];
     boolean wode_do_kwasu;
+    boolean uj_punkt_kw=false;
+    
     int wysokosc_zdj[] = new int[3];
     int szerokosc_zdj[] = new int[3];
     float prog_kwas;
+    float stez_wynik;
     
     int [] ilosc_wody={100,0,500};  
     int [] ilosc_kwasu={0,100,0};
@@ -36,7 +48,7 @@ public class Roztwory extends JPanel{
     int [] punk_wz_nacz_x=new int [8];
     int [] punk_wz_nacz_y=new int [8];
     int liczba_punkt=8;
-    int licznik_an=2;
+    int licz_animac=2;
             
     Polygon wzor_naczynia1= new Polygon();
     Polygon wzor_naczynia2=new Polygon();
@@ -49,8 +61,12 @@ public class Roztwory extends JPanel{
     Point pozycja_myszy;
     
     public Roztwory(){
+        timer = new Timer(DELAY, this);
+        timer.start();
+        
         wode_do_kwasu=false;
         prog_kwas=1/100;
+        stez_wynik=7/100;
         
         punk_pol_x[0]=0;
         punk_pol_x[1]=0;
@@ -87,13 +103,7 @@ public class Roztwory extends JPanel{
             granice_nacz[j]=new Rectangle();
         }
 
-        //okno_roz.setVisible(true);
-        //action performed mousepressed            
-        //getmouse position
-        //redraw? if mouse position changed?
-        //
-            //
-       
+     
 
         
     
@@ -198,7 +208,7 @@ public class Roztwory extends JPanel{
         g2.draw(granice_nacz[0]);
         g2.draw(granice_nacz[1]);
         g2.drawRect(p.x,p.y,10,10);
-        if(wode_do_kwasu && licznik_an>1)wlano_wod_do_kw(g);
+        if(wode_do_kwasu && licz_animac>1)wlano_wod_do_kw(g);
         System.out.println("0,0 pol "+wzor_naczynia1.contains(78, 146));
             
         
@@ -242,6 +252,7 @@ public class Roztwory extends JPanel{
     
     
     void kliknietoprawy (Point p){
+        
         System.out.println("prawy");
         wode_do_kwasu=false;
         boolean kliknieto []= new boolean [3];
@@ -282,9 +293,10 @@ public class Roztwory extends JPanel{
             czy_kw_od=spr_procent(prog_kwas,nalewam_od);
             System.out.println("czy od to kwas "+czy_kw_od+" czy do to kwas "+czy_kw_do);
             if((czy_kw_od==false)&&(czy_kw_do==true)){// nie wlewaj wody do kwasu
-                System.out.println("!!!!!!!!!!!!!!!!!!@%%%%%%%%%###########^^^^^^&&&&&&&&&&");
+              
                 wode_do_kwasu=true;
-                licznik_an=2;
+                uj_punkt_kw=true;
+                licz_animac=100;
             }
             
             przelewanie(nalewam_od,nalewam_do);
@@ -292,7 +304,7 @@ public class Roztwory extends JPanel{
     }
     
     void przelewanie (int odktr, int doktr){
-        System.out.println("przelewanie");
+       
         if(ilosc_wody[odktr]>5){
             ilosc_wody[odktr]-=5;
             ilosc_wody[doktr]+=5;
@@ -304,6 +316,10 @@ public class Roztwory extends JPanel{
         }
     }
     
+    
+    
+    
+    
     boolean spr_procent (float pr, int ktr){
         float procent_kwasu=pr;
         procent_kwasu=(float)ilosc_kwasu[ktr]/((float)ilosc_kwasu[ktr]+(float)ilosc_wody[ktr]);
@@ -314,6 +330,11 @@ public class Roztwory extends JPanel{
         
         return false;
     }
+    
+    
+    
+    
+    
     void wlano_wod_do_kw (Graphics g){
         int w=Tlo.szerokosc_okna;
         int h=Tlo.wysokosc_okna;
@@ -329,8 +350,34 @@ public class Roztwory extends JPanel{
             g.setColor(Color.YELLOW);
             g.fillOval(x+punk_pol_x[1],y+punk_pol_y[1],p,p);
          }
-       licznik_an--;
+       licz_animac--;
    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        repaint();
+    }
+    
+    int zatwierdz(){
+        int suma=0;
+        
+        for(int i=0;i<3;i++){
+            if(spr_procent(stez_wynik,i)){
+                suma=3;
+            }
+        }
+        
+        if(uj_punkt_kw){
+            suma-=2;
+            
+        }
+        
+        if(suma<0) suma=0;
+        
+        System.out.println("suma pnkt "+suma);
+        return suma;
+    }
 }
 
 /*

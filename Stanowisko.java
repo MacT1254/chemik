@@ -9,11 +9,11 @@ package projekt;
  *
  * @author Mac
  */
-public class stanowiska {
+public class Stanowisko {
 
     public int run_point_x,run_point_y;
     
-    stanowiska(int run_point_x, int run_point_y){
+    Stanowisko(int run_point_x, int run_point_y){
         this.run_point_x=run_point_x;
         this.run_point_y=run_point_y;
     }

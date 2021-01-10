@@ -21,37 +21,39 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
  
 public class Gra extends JPanel
-{  
+{   int zmx=Postac.srodek_x;
+    int zmy=Postac.srodek_y;
     BufferedImage buf_zdj;
-    Tlo nowetlo= new Tlo();
+    ArrayList<Stanowisko> lista_stan = new ArrayList<>();
+    ArrayList<Obiekt> lista_obiekt = new ArrayList<>();
    
-public Gra (Tlo n){  
-  
-   nowetlo=n;   
+public Gra (ArrayList<Obiekt> listaob,ArrayList<Stanowisko> listas){  
+   lista_obiekt=listaob;
+   lista_stan=listas;
    System.out.println();
   }  
     
    
    @Override
     protected void paintComponent(Graphics g){
-        int zmx=nowetlo.mando.srodek_x;
-        int zmy=nowetlo.mando.srodek_y;
-        zmx=nowetlo.mando.srodek_x-nowetlo.mando.srednica_ciala/2;
-        zmy=nowetlo.mando.srodek_y-nowetlo.mando.srednica_ciala/2;
+        
+        
+        zmx=Postac.srodek_x-Postac.srednica_ciala/2;
+        zmy=Postac.srodek_y-Postac.srednica_ciala/2;
         Graphics2D g2 = (Graphics2D) g;
         
-        g2.drawImage(nowetlo.tlo0,0,0,null);
-        //g2.drawImage(nowetlo.obrazpos,nowetlo.mando.srodek_x,nowetlo.mando.srodek_y,null);
-        TexturePaint pos = new TexturePaint(nowetlo.obrazpos, new Rectangle(zmx, zmy, 98, 105));
+        g.drawImage(Tlo.tlo0,0,0,null);
+       // g2.drawImage(Tlo.pos,Postac.srodek_x,Postac.srodek_y,null);
+        TexturePaint pos = new TexturePaint(Tlo.postac, new Rectangle(zmx, zmy, 98, 105));
         g2.setPaint(pos);
-        g.fillOval(zmx,zmy,nowetlo.mando.srednica_ciala,nowetlo.mando.srednica_ciala);
+        g.fillOval(zmx,zmy,Postac.srednica_ciala,Postac.srednica_ciala);
         g.setColor(Color.RED);
-        g2.drawRect(nowetlo.lista_obiekt.get(0).x,nowetlo.lista_obiekt.get(0).y,nowetlo.lista_obiekt.get(0).w,nowetlo.lista_obiekt.get(0).h );
-        g2.drawRect(nowetlo.lista_obiekt.get(1).x,nowetlo.lista_obiekt.get(1).y,nowetlo.lista_obiekt.get(1).w,nowetlo.lista_obiekt.get(1).h );
-        g2.drawRect(nowetlo.lista_obiekt.get(2).x,nowetlo.lista_obiekt.get(2).y,nowetlo.lista_obiekt.get(2).w,nowetlo.lista_obiekt.get(2).h );
-        //g2.drawRect(nowetlo.lista_obiekt.get(0).x,nowetlo.lista_obiekt.get(0).y,nowetlo.lista_obiekt.get(0).w,nowetlo.lista_obiekt.get(0).h );
+        g2.drawRect(lista_obiekt.get(0).x,lista_obiekt.get(0).y,lista_obiekt.get(0).w,lista_obiekt.get(0).h );
+        g2.drawRect(lista_obiekt.get(1).x,lista_obiekt.get(1).y,lista_obiekt.get(1).w,lista_obiekt.get(1).h );
+        g2.drawRect(lista_obiekt.get(2).x,lista_obiekt.get(2).y,lista_obiekt.get(2).w,lista_obiekt.get(2).h );
+        //g2.drawRect(lista_obiekt.get(0).x,lista_obiekt.get(0).y,lista_obiekt.get(0).w,lista_obiekt.get(0).h );
         g.setColor(Color.BLACK);
-        //Ellipse2D.Double circle = new Ellipse2D.Double(nowetlo.mando.srodek_x, nowetlo.mando.srodek_y, nowetlo.mando.srednica_ciala, nowetlo.mando.srednica_ciala);
+        //Ellipse2D.Double circle = new Ellipse2D.Double(Postac.srodek_x, Postac.srodek_y, Postac.srednica_ciala, Postac.srednica_ciala);
         
         
     }
@@ -75,8 +77,8 @@ public Gra (Tlo n){
         g2.fillRect(0,0, 1024, 768);
         
         g2.setColor(Color.black);
-        g2.drawRect(nowetlo.lista_obiekt.get(0).x,nowetlo.lista_obiekt.get(0).y,nowetlo.lista_obiekt.get(0).w,nowetlo.lista_obiekt.get(0).h );         //stanowisko do wypełniania formuł chemicznych
-        g2.drawRect(nowetlo.lista_obiekt.get(3).x,nowetlo.lista_obiekt.get(3).y,nowetlo.lista_obiekt.get(3).w,nowetlo.lista_obiekt.get(3).h );   
+        g2.drawRect(lista_obiekt.get(0).x,lista_obiekt.get(0).y,lista_obiekt.get(0).w,lista_obiekt.get(0).h );         //stanowisko do wypełniania formuł chemicznych
+        g2.drawRect(lista_obiekt.get(3).x,lista_obiekt.get(3).y,lista_obiekt.get(3).w,lista_obiekt.get(3).h );   
             
         
         //rysowanie chemika

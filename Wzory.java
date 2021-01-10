@@ -16,31 +16,52 @@ import java.awt.image.BufferedImage;
 
 
 public class Wzory extends JPanel {
+    int odchylka_x=0;
+    int odchylka_y=0;
     
     int szerokosc_wz=50;
     int wysokosc_wz=20;
-    int pozycja_wz_x1=312;
-    int pozycja_wz_x2=388;
-    int pozycja_wz_x3=222;
-    int pozycja_wz1_y=63;
-    int pozycja_wz2_y=92;
-    int pozycja_wz3_y=128;
+   
+    int pozycja_wz1_x=282+odchylka_x;
+    int pozycja_wz1_y=187+odchylka_y;
     
+    int pozycja_wz2_x=358+odchylka_x;
+    int pozycja_wz2_y=218+odchylka_y;
+    
+    int pozycja_wz3_x=192+odchylka_x;
+    int pozycja_wz3_y=254+odchylka_y;
+    
+    int pozycja_wz4_x=257+odchylka_x;
+    int pozycja_wz4_y=285+odchylka_y;
+    
+    
+    String str_odp[]=new String [4];
+    String rozw[]=new String [4];
+    
+
     String Wzor1="H20 --> H2 +";
     String Wzor2="MgO+H2CO3 --> MgCO3 +";
     String Wzor3="+ H2SO4 --> K2SO4 + H20";
     String Wzor4="2K + 2H20 --> + ";
+    JTextField odp1 = new JTextField();
+    JTextField odp2 = new JTextField();
+    JTextField odp3 = new JTextField();
+    JTextField odp4 = new JTextField();
+    
     
     Wzory(){
         
-        JTextField odp1,odp2,odp3;
-        odp1 = new JTextField();
-        odp2 = new JTextField();
-        odp3 = new JTextField();
-        odp1.setBounds(pozycja_wz_x1,pozycja_wz1_y,szerokosc_wz,wysokosc_wz);
-        odp2.setBounds(pozycja_wz_x2,pozycja_wz2_y,szerokosc_wz,wysokosc_wz);
-        odp3.setBounds(pozycja_wz_x3,pozycja_wz3_y,szerokosc_wz,wysokosc_wz);
+        rozw[0]="O2";
+        rozw[1]="H2O";
+        rozw[2]="K2O";
+        rozw[3]="NaO";
+
         
+        
+        odp1.setBounds(pozycja_wz1_x,pozycja_wz1_y,szerokosc_wz,wysokosc_wz);
+        odp2.setBounds(pozycja_wz2_x,pozycja_wz2_y,szerokosc_wz,wysokosc_wz);
+        odp3.setBounds(pozycja_wz3_x,pozycja_wz3_y,szerokosc_wz,wysokosc_wz);
+        odp4.setBounds(pozycja_wz4_x,pozycja_wz4_y,szerokosc_wz,wysokosc_wz);
         /*try{
             BufferedImage myImage = ImageIO.read(new File("src/res/tlo1.jpg"));
             okno_wz.setContentPane(new Tlo(myImage));
@@ -52,13 +73,20 @@ public class Wzory extends JPanel {
         */
         
         
+        
         setLayout(null);
+        
         add(odp1);
         add(odp2);
         add(odp3);
+        add(odp4);
         setVisible(true);
         
+       
+        
    }
+    
+    
  //wczytywanie grafiki 
 
  //sprawdzanie tekstu
@@ -66,18 +94,28 @@ public class Wzory extends JPanel {
     
     
     
-    boolean spr_wzoru(String a,String b){
-            if(a.equals(b)) return true;
-            else return false;
+    int zatwierdz(){
+        int suma=0;
+        str_odp[0]=odp1.getText();
+        str_odp[1]=odp2.getText();
+        str_odp[2]=odp3.getText();
+        str_odp[3]=odp4.getText();
+        
+        for(int n=0;(n<str_odp.length && n<rozw.length);n++){
+            if(str_odp[n].equals(rozw[n])){
+                suma++;
+                System.out.println("roz "+n);
+            }
+            
+        }
+        System.out.println("error "+suma);
+        return suma;
     }
     @Override
     protected void paintComponent(Graphics g){
-        int zmx=nowetlo.mando.srodek_x;
-        int zmy=nowetlo.mando.srodek_y;
-        zmx=nowetlo.mando.srodek_x-nowetlo.mando.srednica_ciala/2;
-        zmy=nowetlo.mando.srodek_y-nowetlo.mando.srednica_ciala/2;
+        
         Graphics2D g2 = (Graphics2D) g;
         
-        g2.drawImage(nowetlo.tlo0,0,0,null);
-            
+        g2.drawImage(Tlo.tlo1,0,0,null);
+    }        
 }

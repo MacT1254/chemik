@@ -11,17 +11,20 @@ import java.awt.*;
  */
 public class PoruszajacyObiekt {
     
-    int x,y;
-    boolean lyzka;
+    int x,y,szerokosc,wysokosc;
+    boolean wybrane;
+    String nazwa;
     Rectangle granice=new Rectangle();
     Polygon polygon=new Polygon();
+    Point koncowka=new Point();
     
-     public PoruszajacyObiekt(int x, int y, boolean lyzka){
+    
+     public PoruszajacyObiekt(int x, int y, boolean wybrane,String nazwa){
         this.x=x;
         this.y=y;
-        this.lyzka=lyzka;
-
-
+        this.nazwa=nazwa;
+        this.wybrane=wybrane;
+        
     }
     
 }

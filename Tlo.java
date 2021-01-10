@@ -31,13 +31,14 @@
         static BufferedImage postac;
         static BufferedImage lyzka;
         static BufferedImage pipeta;
-        
+        static BufferedImage pipeta2;
         
         
 
         public static void wczytaj_obrazy(){
             try{
                 pipeta=ImageIO.read(new File("src/res/pipeta.png"));
+                pipeta2=ImageIO.read(new File("src/res/pipeta2.png"));
                 lyzka=ImageIO.read(new File("src/res/lyzka.png"));
                 postac=ImageIO.read(new File("src/res/postac.jpg"));
                 naczynie1=ImageIO.read(new File("src/res/naczynie1a.png"));
@@ -50,7 +51,7 @@
             tlo0=wczytaj("src/res/tlo0.jpg");
             tlo1=wczytaj("src/res/tlo1.png");
             tlo2=wczytaj("src/res/tlo2.png");
-            tlo3=wczytaj("src/res/tlo3.jpg");
+            tlo3=wczytaj("src/res/tlo3a.png");
            // =wczytaj("src/res/naczynie1a.png");
            // naczynie2=wczytaj("src/res/naczynie2.png");
             //naczynie3=wczytaj("src/res/naczynie3.png");

@@ -16,16 +16,16 @@ import java.util.ArrayList;
  * @author Mac
  */
 public class SilnikGry {
+    
+    long MAX_TIME=Long.MAX_VALUE;
     static int odl_min=35000;
     static int krok_chodz=8;
-    static int odchylka_x=0;
-    static int odchylka_y=0;
-    static int stol_A_pos_x=63+odchylka_x;
-    static int stol_A_pos_y=59+odchylka_y;
-    static int stol_B_pos_x=65+odchylka_x;
-    static int stol_B_pos_y=530+odchylka_y;
-    static int stol_C_pos_x=566+odchylka_x;
-    static int stol_C_pos_y=529+odchylka_y;
+    static int stol_A_pos_x=63;
+    static int stol_A_pos_y=59;
+    static int stol_B_pos_x=65;
+    static int stol_B_pos_y=530;
+    static int stol_C_pos_x=566;
+    static int stol_C_pos_y=529;
     static int stol_sz=388;
     static int stol_wy=143;
     
@@ -35,163 +35,252 @@ public class SilnikGry {
     int wysokosc_przyc=222-101;
     Font czcinka=new Font("URW Chancery L", Font.BOLD, 21);
     
-    Point KM;
-
+    Point KM_roz;
+    Point KM_zwi;
 //tworzenie obiektów
-    Obiekt stolA=new Obiekt(stol_A_pos_x, stol_A_pos_y, stol_sz, stol_wy);
-    Obiekt stolB=new Obiekt(stol_B_pos_x, stol_B_pos_y, stol_sz, stol_wy);
-    Obiekt stolC=new Obiekt(stol_C_pos_x, stol_C_pos_y, stol_sz, stol_wy);
-    Obiekt ściana_gor=new Obiekt(0, 54, 1024, 1);
-    Obiekt ściana_dol=new Obiekt(0, 679, 1024, 1);
-    Obiekt ściana_lewo=new Obiekt(59, 0, 1, 768);
-    Obiekt ściana_prawo=new Obiekt(950, 0, 1, 768);
+    Obiekt stolA;
+    Obiekt stolB;
+    Obiekt stolC;
+    Obiekt ściana_gor;
+    Obiekt ściana_dol;
+    Obiekt ściana_lewo;
+    Obiekt ściana_prawo;
     
     
-    ArrayList<Stanowisko> lista_stan = new ArrayList<>();
+    ArrayList<Stanowisko> lista_stan =new ArrayList<>();;
     ArrayList<Obiekt> lista_obiekt = new ArrayList<>();
-    Stanowisko stol_z_papierami=new Stanowisko(324,127);
-    Stanowisko stol_z_roztw=new Stanowisko(242,600);
+    Stanowisko stol_z_papierami;
+    Stanowisko stol_z_roztw;
+    Stanowisko stol_z_zwi;
     
-    Gra nowagra= new Gra(lista_obiekt,lista_stan);
-    Okno okno_gr=new Okno("Chemik"); 
+    Gra nowagra;
+    Okno okno_gr; 
 
-    Wzory minigra1= new Wzory();
-    Okno okno_wz=new Okno("Wzory");
-    Button zatwierdz_wz=new Button("Zatwierdż");
+    Wzory minigra1;
+    Okno okno_wz;
+    Button zatwierdz_wz;
 
 
-    Roztwory minigra2= new Roztwory();
-    Okno okno_roz=new Okno("Roztwory");
-    Button zatwierdz_roz=new Button("Zatwierdż");
+    Roztwory minigra2;
+    Okno okno_roz;
+    Button zatwierdz_roz;
     
-    Zwiazki_chem minigra3= new Zwiazki_chem();
-    Okno okno_zwi=new Okno("Zwiazki chemiczne");
-    Button zatwierdz_zwi=new Button("Zatwierdż");
+    Zwiazki_chem minigra3; 
+    Okno okno_zwi;
+    Button zatwierdz_zwi;
        
         
-        
+   long startTime = System.currentTimeMillis(); 
     SilnikGry(){
-
-        //?
+       
+        lista_obiekt.add(new Obiekt(stol_A_pos_x, stol_A_pos_y, stol_sz, stol_wy));
+        lista_obiekt.add(new Obiekt(stol_B_pos_x, stol_B_pos_y, stol_sz, stol_wy));
+        lista_obiekt.add(new Obiekt(stol_C_pos_x, stol_C_pos_y, stol_sz, stol_wy));
+        
+        lista_obiekt.add(new Obiekt(0, 54, 1024, 1));//sciany
+        lista_obiekt.add(new Obiekt(0, 679, 1024, 1));
+        lista_obiekt.add(new Obiekt(59, 0, 1, 768));
+        lista_obiekt.add(new Obiekt(950, 0, 1, 768));
+        
+        stol_z_papierami = new Stanowisko(324,127);
+        stol_z_roztw = new Stanowisko(242,600);
+        stol_z_zwi = new Stanowisko(760,590);  
+        
         lista_stan.add(stol_z_papierami);
         lista_stan.add(stol_z_roztw);
-        lista_obiekt.add(stolA);//do usu// do usuniecia
-        lista_obiekt.add(stolB);
-        lista_obiekt.add(stolC);
-        lista_obiekt.add(ściana_gor);
-        lista_obiekt.add(ściana_dol);
-        lista_obiekt.add(ściana_lewo);
-        lista_obiekt.add(ściana_prawo);   
+        lista_stan.add(stol_z_zwi);
         
+        nowagra = new Gra(lista_obiekt,lista_stan);
+        okno_gr = new Okno("Chemik");
         okno_gr.setVisible(true);
         okno_gr.add(nowagra);
         
-        okno_wz.add(minigra1);
-        zatwierdz_wz.setBounds(pozycja_zatx,pozycja_zaty,szerokosc_przyc,wysokosc_przyc);
-        zatwierdz_wz.setFont(czcinka);
-        zatwierdz_wz.addActionListener(new B1());
-        minigra1.add(zatwierdz_wz);
-        
-        okno_roz.setVisible(false);
-        okno_roz.add(minigra2);
-        okno_roz.addMouseListener(new MouseAdapter(){
-            public void mouseClicked(MouseEvent me){
-            KM=me.getPoint();
-            
-            if(me.getButton()==MouseEvent.BUTTON1){//kliknieto lewy
-                minigra2.kliknietolewy(KM);
-                okno_roz.repaint();
-            }
-            if(me.getButton()==MouseEvent.BUTTON3){//kliknieto prawy
-                minigra2.kliknietoprawy(KM);
-                okno_roz.repaint();
-            }
-            }
-        });
-            
-        
-        //})
-
-        
-        okno_gr.addKeyListener(new KeyAdapter(){
-
-            public void keyPressed(KeyEvent ke){
-
-                if(ke.getKeyCode()==ke.VK_RIGHT){
-
-                     if(sprawdzkolizje(false,false,false,true)){
-                         System.out.println("kolizja"+Postac.srodek_y);
-                     }
-
-                    else { 
-                         System.out.println("right"+Postac.srodek_y);
-                         Postac.srodek_x+=krok_chodz;
-                         okno_gr.repaint();
-                    }
-                }
-
-                if(ke.getKeyCode()==ke.VK_LEFT){
-
-                     if(sprawdzkolizje(false,false,true,false)){
-                         System.out.println("kolizja"+Postac.srodek_y);
-                     }
-
-                     else { 
-                         System.out.println("left"+Postac.srodek_y);
-                         Postac.srodek_x-=krok_chodz;
-                         okno_gr.repaint();
-                    }
-                }
-
-                if(ke.getKeyCode()==ke.VK_UP){
-
-                    if(sprawdzkolizje(true,false,false,false)){
-                         System.out.println("kolizja"+Postac.srodek_y);
-                    }
-
-                    else { 
-                         System.out.println("up"+Postac.srodek_y);
-                         Postac.srodek_y-=krok_chodz;
-                         okno_gr.repaint();
-                    }
-                }
-
-                if(ke.getKeyCode()==ke.VK_DOWN){
-
-                     if(sprawdzkolizje(false,true,false,false)){
-                         System.out.println("kolizja"+Postac.srodek_y);
-                     }
-
-                     else { 
-                         System.out.println("down"+Postac.srodek_y);
-                         Postac.srodek_y+=krok_chodz;
-                         okno_gr.repaint();
-                     }
-                }
-
-                if(ke.getKeyCode()==ke.VK_M){
-                    int odl;
-                    for(int m=0; m < lista_stan.size(); m++){
-
-                        odl=odlegloscdokwa(Postac.srodek_x,Postac.srodek_y,lista_stan.get(m).run_point_x,lista_stan.get(m).run_point_y);
-
-                        if(odl<odl_min){
-                             System.out.println(":) "+odl+" Postacx "+Postac.srodek_x+" Postacy "+Postac.srodek_y+" runx "+lista_stan.get(m).run_point_x+" runy"+lista_stan.get(m).run_point_y);
-                            if(m==0) okno_wz.setVisible(true);
-                            if(m==1) okno_roz.setVisible(true);
-                            if(m==2) okno_zwi.setVisible(true);
-                        }
-                    }  
-                }
-            }
-        });
-    }
+   
+    }  
     
+void poruszanie_postacia(){   
+
+    okno_gr.addKeyListener(new KeyAdapter(){
+
+       public void keyPressed(KeyEvent ke){
+
+           if(ke.getKeyCode()==ke.VK_RIGHT){
+
+                if(sprawdzkolizje(false,false,false,true)){
+                    System.out.println("kolizja"+Postac.srodek_y);
+                }
+
+               else { 
+                    System.out.println("right"+Postac.srodek_y);
+                    Postac.srodek_x+=krok_chodz;
+                    okno_gr.repaint();
+               }
+           }
+
+           if(ke.getKeyCode()==ke.VK_LEFT){
+
+                if(sprawdzkolizje(false,false,true,false)){
+                    System.out.println("kolizja"+Postac.srodek_y);
+                }
+
+                else { 
+                    System.out.println("left"+Postac.srodek_y);
+                    Postac.srodek_x-=krok_chodz;
+                    okno_gr.repaint();
+               }
+           }
+
+           if(ke.getKeyCode()==ke.VK_UP){
+
+               if(sprawdzkolizje(true,false,false,false)){
+                    System.out.println("kolizja"+Postac.srodek_y);
+               }
+
+               else { 
+                    System.out.println("up"+Postac.srodek_y);
+                    Postac.srodek_y-=krok_chodz;
+                    okno_gr.repaint();
+               }
+           }
+
+           if(ke.getKeyCode()==ke.VK_DOWN){
+
+                if(sprawdzkolizje(false,true,false,false)){
+                    System.out.println("kolizja"+Postac.srodek_y);
+                }
+
+                else { 
+                    System.out.println("down"+Postac.srodek_y);
+                    Postac.srodek_y+=krok_chodz;
+                    okno_gr.repaint();
+                }
+           }
+
+           if(ke.getKeyCode()==ke.VK_M){
+               int odl;
+               for(int m=0; m < lista_stan.size(); m++){
+
+                   odl=odlegloscdokwa(Postac.srodek_x,Postac.srodek_y,lista_stan.get(m).run_point_x,lista_stan.get(m).run_point_y);
+
+                   if(odl<odl_min){
+                       System.out.println(":) "+odl+" Postacx "+Postac.srodek_x+" Postacy "+Postac.srodek_y+" runx "+lista_stan.get(m).run_point_x+" runy"+lista_stan.get(m).run_point_y);
+                       if(m==0) {
+                           inic_minigry_wzory();
+                       }
+                       if(m==1) inic_minigry_roztw();
+                       if(m==2) inic_minigry_zwi();
+
+                   }
+               }  
+           }
+       }
+   });
+}
+void inic_minigry_wzory(){
+     
+    minigra1 = new Wzory();
+    okno_wz = new Okno("Wzory");
+    zatwierdz_wz = new Button("Zatwierdż");
+    okno_wz.add(minigra1);
+
+    zatwierdz_wz.setBounds(pozycja_zatx,pozycja_zaty,szerokosc_przyc,wysokosc_przyc);
+    zatwierdz_wz.setFont(czcinka);
+    zatwierdz_wz.addActionListener(new B1());
+    minigra1.add(zatwierdz_wz);
+
+    okno_wz.setVisible(true);
+    
+    
+}
+    
+void inic_minigry_roztw(){
+        
+    minigra2 = new Roztwory();
+    okno_roz = new Okno("Roztwory");
+    zatwierdz_roz = new Button("Zatwierdż");
+    okno_roz.add(minigra2);
+    zatwierdz_roz.setBounds(679,8,szerokosc_przyc,wysokosc_przyc);
+    zatwierdz_roz.setFont(czcinka);
+    zatwierdz_roz.addActionListener(new B2());
+    minigra2.add(zatwierdz_roz);
+    minigra2.setLayout(null);
+  
+       EventQueue.invokeLater(() -> {
+            okno_roz.repaint();
+            
+        });
+
+
+    okno_roz.addMouseListener(new MouseAdapter(){
+        public void mouseClicked(MouseEvent meroz){
+        KM_roz=meroz.getPoint();
+
+        if(meroz.getButton()==MouseEvent.BUTTON1){//kliknieto lewy
+            minigra2.kliknietolewy(KM_roz);
+            okno_roz.repaint();
+        }
+        if(meroz.getButton()==MouseEvent.BUTTON3){//kliknieto prawy
+            minigra2.kliknietoprawy(KM_roz);
+            okno_roz.repaint();
+        }
+        }
+    });
+    
+    okno_roz.setVisible(true);
+    
+  
+          //odrysuj kolejny ekran gry (nowe pozycje obiektów - symulacja ruchu)
+          okno_roz.repaint();
+     
+}
+
+        
+void inic_minigry_zwi(){
+    
+    minigra3=new Zwiazki_chem();
+    okno_zwi = new Okno("Zwiazki chemiczne");
+    zatwierdz_zwi = new Button("Zatwierdż");
+    
+    okno_zwi.add(minigra3);
+    
+    okno_zwi.addMouseListener(new MouseAdapter(){
+        @Override
+        public void mouseClicked(MouseEvent mezwi){
+        KM_zwi=mezwi.getPoint();
+
+
+        if(mezwi.getButton()==MouseEvent.BUTTON1){//kliknieto lewy
+            minigra3.kliknietolewy(KM_zwi);
+            okno_zwi.repaint();
+            System.out.println("adasdsad");
+        }
+        if(mezwi.getButton()==MouseEvent.BUTTON3){//kliknieto prawy
+            minigra3.kliknietoprawy();
+            okno_zwi.repaint();
+        }
+        }
+    });
+    
+    
+    
+    
+    
+ }          
     private class B1 implements ActionListener {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 Tlo.sumapunkt=+minigra1.zatwierdz();
                 System.out.println(Tlo.sumapunkt);
-                okno_wz.setVisible(false);
+                okno_wz.setVisible(false);//??
+            }
+    }
+    
+    private class B2 implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Tlo.sumapunkt=+minigra2.zatwierdz();
+                System.out.println(Tlo.sumapunkt);
+                okno_roz.setVisible(false);//??
             }
     }
     

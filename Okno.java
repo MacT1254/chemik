@@ -10,7 +10,8 @@ import java.awt.*;
 public class Okno extends JFrame{
     Okno(String nazwa){
         super(nazwa);
-        setSize(1024,768);
+        setSize(Tlo.szerokosc_okna,Tlo.wysokosc_okna);
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
