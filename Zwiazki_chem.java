@@ -21,37 +21,42 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 
-
+ /**
+ Panel graficzny mini gry "Związki chemiczne"
+ */
 
 public class Zwiazki_chem extends JPanel
     implements ActionListener{
-    Timer timer;
-    static final int DELAY=60;
+    private Timer timer;
+    static final int DELAY=40;
     
-    Rectangle pojemnik;
-    Point [] trojkat;
-    Point [] p_lyzki;
-    Point [] p_pipety;
+    private final Rectangle pojemnik;       //obszar opuszczania klikania pustego pojemnika
+    private final Point [] trojkat;         //punkty kształtu opuszczonego składnika
+    private final Point [] p_lyzki;
+    private final Point [] p_pipety;
     
-    int [] buf1x;
-    int [] buf1y;
-    int [] buf2x;
-    int [] buf2y;
-    int [] buf3x;
-    int [] buf3y;
+    private int [] buf1x;       //bufory do obliczania poligonów 
+    private int [] buf1y;
+    private int [] buf2x;
+    private int [] buf2y;
+    private int [] buf3x;
+    private int [] buf3y;
 
-    Skladnik siarka;
-    Skladnik NaOH;
-    Skladnik wegiel;
-    Skladnik manganian;
-    Skladnik HCl;
-    Skladnik puste_nacz;
-    ArrayList<Skladnik> substancje;
+    private Skladnik siarka;    
+    private Skladnik NaOH;
+    private Skladnik wegiel;
+    private Skladnik manganian;
+    private Skladnik HCl;
+    private Skladnik puste_nacz;
+    private ArrayList<Skladnik> substancje;
     
-    PoruszajacyObiekt lyzka;
-    PoruszajacyObiekt pipeta;
-    ArrayList<PoruszajacyObiekt> narzedzia;
+    private PoruszajacyObiekt lyzka;
+    private PoruszajacyObiekt pipeta;
+    private ArrayList<PoruszajacyObiekt> narzedzia;
     
+    /**
+     * Konstruktor - inicjalizowanie zmiennych
+     */
     public Zwiazki_chem(){
         
         timer = new Timer(DELAY, this);
@@ -88,18 +93,18 @@ public class Zwiazki_chem extends JPanel
         substancje.add(HCl);
         //dodanie narzedzdo listy
         
-        //kszztalt pipety
+        
         int ilosc_sk=substancje.size();
         
-        this.lyzka = new PoruszajacyObiekt(0,0,true,"lyzka",ilosc_sk);
-        this.pipeta = new PoruszajacyObiekt(0,0,false,"pipeta",ilosc_sk);
+        this.lyzka = new PoruszajacyObiekt(297,323,false,"lyzka",ilosc_sk);
+        this.pipeta = new PoruszajacyObiekt(123,323,false,"pipeta",ilosc_sk);
         this.narzedzia = new ArrayList<>();
         
         narzedzia.add(lyzka);
         narzedzia.add(pipeta);
         
         //kszztalt lyzki
-        p_lyzki[0]=new Point(0,9);//0 koncowka
+        p_lyzki[0]=new Point(0,9);  //0 koncowka
         p_lyzki[1]=new Point(9,0);
         p_lyzki[2]=new Point(152,143);
         p_lyzki[3]=new Point(161,139);
@@ -111,24 +116,28 @@ public class Zwiazki_chem extends JPanel
         p_lyzki[9]=new Point(144,156);
         p_lyzki[10]=new Point(145,154);
         
-        p_pipety[0]=new Point(144,144);
-        p_pipety[1]=new Point(135, 144);//1
-        p_pipety[2]=new Point(15, 24);//2
-        p_pipety[3]=new Point(9, 28);//3
-        p_pipety[4]=new Point(4, 23);//4
-        p_pipety[5]=new Point(7, 19);//5
-        p_pipety[6]=new Point(0,12);//6
-        p_pipety[7]=new Point(1,1);//7 rog
+        //kszztalt pipety
+        p_pipety[0]=new Point(144,144);     //0 koncowka
+        p_pipety[1]=new Point(135, 144);
+        p_pipety[2]=new Point(15, 24);
+        p_pipety[3]=new Point(9, 28);
+        p_pipety[4]=new Point(4, 23);
+        p_pipety[5]=new Point(7, 19);
+        p_pipety[6]=new Point(0,12);
+        p_pipety[7]=new Point(1,1);
         
         trojkat[0]=new Point(0,17);
         trojkat[1]=new Point(34,17);
         trojkat[2]=new Point(17,0);
         
-        for(int i=6;i>0;i--){//pipeta jest symetryczna
+        
+        
+        for(int i=6;i>0;i--){           //pipeta jest symetryczna
             int x=p_pipety[i].y;
             int y=p_pipety[i].x;
             p_pipety[14-i]= new Point(x,y);
         }
+        
         
         for(Skladnik skl: substancje){
             Rectangle prost =new Rectangle (skl.x,skl.y,120,80);
@@ -139,11 +148,11 @@ public class Zwiazki_chem extends JPanel
             
         }
 
-        lyzka.wysokosc=Tlo.lyzka.getHeight();
-        lyzka.szerokosc=Tlo.lyzka.getWidth();
+        lyzka.wysokosc=Zasoby.lyzka.getHeight();
+        lyzka.szerokosc=Zasoby.lyzka.getWidth();
 
-        pipeta.wysokosc=Tlo.pipeta.getHeight();
-        pipeta.szerokosc=Tlo.pipeta.getWidth();
+        pipeta.wysokosc=Zasoby.pipeta.getHeight();
+        pipeta.szerokosc=Zasoby.pipeta.getWidth();
             
  
         
@@ -157,9 +166,10 @@ public class Zwiazki_chem extends JPanel
         PointerInfo pi=MouseInfo.getPointerInfo();
         Point p = pi.getLocation();
 
-        g2.drawImage(Tlo.tlo3,0,0,null);
-
-        for(PoruszajacyObiekt narz:narzedzia){
+        g2.drawImage(Zasoby.tlo3,0,0,null);
+        
+        //obliczanie punktu poczatku obrazu podniesionego narzędzia
+        for(PoruszajacyObiekt narz:narzedzia){  
             if(narz.wybrane){
 
                narz.x=p.x-narz.szerokosc/2;
@@ -167,8 +177,10 @@ public class Zwiazki_chem extends JPanel
 
             }
         }
-
-        for(int i=0; i<p_lyzki.length;i++){
+        
+        
+        //obliczanie granic tekstury obrazu łyżki
+        for(int i=0; i<p_lyzki.length;i++){      
             buf1x[i]=lyzka.x+p_lyzki[i].x;
             buf1y[i]=lyzka.y+p_lyzki[i].y;             
         }
@@ -178,8 +190,10 @@ public class Zwiazki_chem extends JPanel
 
         lyzka.polygon=new Polygon(buf1x,buf1y,p_lyzki.length);
         lyzka.granice=lyzka.polygon.getBounds();
-
-        for(int i=0; i<p_pipety.length;i++){
+        
+        
+        //obliczanie granic tekstury obrazu pipety
+        for(int i=0; i<p_pipety.length;i++){        
             buf2x[i]=pipeta.x+p_pipety[i].x;
             buf2y[i]=pipeta.y+p_pipety[i].y;             
         }
@@ -187,7 +201,9 @@ public class Zwiazki_chem extends JPanel
         pipeta.polygon=new Polygon(buf2x,buf2y,p_pipety.length);
         pipeta.granice=pipeta.polygon.getBounds();
         
-        for(Skladnik skl:substancje){//rysowanie skladnikow w pojemniku
+        
+        //rysowanie skladnikow w pojemniku
+        for(Skladnik skl:substancje){       
             if(skl.w_poj){
 
                     g.setColor(skl.kolor);
@@ -204,11 +220,13 @@ public class Zwiazki_chem extends JPanel
             }
         }
 
-        TexturePaint textura_lyzki = new TexturePaint(Tlo.lyzka,lyzka.granice);//rysowanie lyzki
+        TexturePaint textura_lyzki = new TexturePaint(Zasoby.lyzka,lyzka.granice);      //rysowanie lyzki
         g2.setPaint(textura_lyzki);
         g.fillPolygon(lyzka.polygon);
         
-        for(Skladnik skl:substancje){//rysowanie skladnikow na lyzce i zmiana tekstury pipety
+        
+        //rysowanie skladnikow na lyzce i zmiana tekstury pipety
+        for(Skladnik skl:substancje){       
             if(skl.wybrane && "lyzka".equals(skl.podnosi)){
               
                g.setColor(skl.kolor);
@@ -216,11 +234,11 @@ public class Zwiazki_chem extends JPanel
             }
             
             if(skl.wybrane && "pipeta".equals(skl.podnosi)){
-                TexturePaint textura_pipety2 = new TexturePaint(Tlo.pipeta2,pipeta.granice);
+                TexturePaint textura_pipety2 = new TexturePaint(Zasoby.pipeta2,pipeta.granice);
                 g2.setPaint(textura_pipety2);
             }
             else{
-                TexturePaint textura_pipety = new TexturePaint(Tlo.pipeta,pipeta.granice);
+                TexturePaint textura_pipety = new TexturePaint(Zasoby.pipeta,pipeta.granice);
                 g2.setPaint(textura_pipety);
             }
 
@@ -238,8 +256,8 @@ public class Zwiazki_chem extends JPanel
     
     
     
-    
-        void kliknietolewy (Point KM){
+    //metoda obsługująca logikę podnoszenia narzędzi  
+        void pod_narzedzie (Point KM){
             
             int ilosc_narz=narzedzia.size();
             boolean podniesione_narz=false;
@@ -251,7 +269,10 @@ public class Zwiazki_chem extends JPanel
             
             
             int iter1=0;
-            for(PoruszajacyObiekt narz: narzedzia){//sprawdzay co kliknieto
+            
+            
+             //sprawdzanie, czy kliknięto narzędzie
+            for(PoruszajacyObiekt narz: narzedzia){     
                 podniesione_narz=narz.wybrane || podniesione_narz;
 
                 if(narz.granice.contains(KM)){
@@ -265,12 +286,12 @@ public class Zwiazki_chem extends JPanel
             int iter2=0;
             for(PoruszajacyObiekt narz: narzedzia){
                      
-                if(podniesione_narz==false && kliknieto_narz[iter2]){//jak nie jest podniesione narzedzie
+                if(podniesione_narz==false && kliknieto_narz[iter2]){       //jak nie jest podniesione narzedzie
                     narz.wybrane=true;
                     podniesione_narz=true;
                 }
                 
-                else if(kliknieto_narz[iter2]&&narz.wybrane) {//jak podniesiono jakies naczynie i  kliknieto to narzedzie
+                else if(kliknieto_narz[iter2]&&narz.wybrane) {      //jak podniesione jest narzędzie oraz kliknieto je
                     narz.wybrane=false;
                 }
                 
@@ -281,18 +302,17 @@ public class Zwiazki_chem extends JPanel
         
         
         
-    
-        void kliknietoprawy (){
-
-        int ilosc_sk=substancje.size();
-        
+      //metoda obsługująca logikę podnoszenia składników   
+       void pod_skladnik (){
  
+          
         int iter1=0;
-        for(Skladnik skl: substancje){//sprawdzamy co kliknieto
+        for(Skladnik skl: substancje){    
 
+            
             for(PoruszajacyObiekt narz: narzedzia){
-                
-               if( skl.granice.contains(narz.koncowka) && narz.nazwa.equals(skl.podnosi) ){//jak kliknieto miejsce pobierania skladnika
+               //sprawdzanie, czy kliknięto składnik
+               if( skl.granice.contains(narz.koncowka) && narz.nazwa.equals(skl.podnosi) && narz.wybrane ){  
                    
                     narz.klik[iter1]=true;  
                }
@@ -302,8 +322,8 @@ public class Zwiazki_chem extends JPanel
                    narz.klik[iter1]=false;
                }
                
-               //wsadzamy do poj
-               if( pojemnik.contains(narz.koncowka) && skl.wybrane && !skl.w_poj && narz.zajete && narz.nazwa.equals(skl.podnosi)){////jak kliknieto miejsce pobierania skladnika i skladnik jest w narzedziu i nie w pojemniku
+               //wkładanie do pojemnika składników
+               if( pojemnik.contains(narz.koncowka) && skl.wybrane && !skl.w_poj && narz.zajete && narz.nazwa.equals(skl.podnosi)){
                    
                     skl.xs=narz.koncowka.x;
                     skl.ys=narz.koncowka.y;
@@ -321,14 +341,14 @@ public class Zwiazki_chem extends JPanel
         for(Skladnik skl: substancje){
             
             for(PoruszajacyObiekt narz: narzedzia){
-                
-                if(narz.zajete==false && narz.klik[iter2] && !narz.zajete ){//jak nie w narzedziu nie ma skladnika i pobiera
+                //pobieranie składników
+                if(narz.zajete==false && narz.klik[iter2] && !narz.zajete ){        //jak nie w narzedziu nie ma skladnika i pobiera
 
                     skl.wybrane=true;//to bierzemy skladnik
                     narz.zajete=true;
                 }
-                
-                else if(narz.klik[iter2]&&skl.wybrane && narz.zajete) {//jak podniesiono jakis skladnik i kliknieto wybrane naczynie
+                //opuszczanie składników
+                else if(narz.klik[iter2]&&skl.wybrane && narz.zajete) {     //jak podniesiono jakis skladnik i kliknieto wybrane nzrzędzie
                     skl.wybrane=false;
                     narz.zajete=false;
                 }
@@ -338,13 +358,15 @@ public class Zwiazki_chem extends JPanel
         }
        
     }
-        
-    int zatwierdz(){
+     /** metoda zatwierdzająca wynik, liczaca punkty do oraz tworząca tekst z  wynikiem końcowym
+      @return zwraca liczbe zdobytych punktów int*/
+   public int zatwierdz(){
         
         int suma=0;
         boolean spr1=false;
         boolean spr2=false;
         boolean spr3=true;      
+        
         
         for(Skladnik skl: substancje){
             if( "NaOH".equals(skl.nazwa) ){
@@ -366,11 +388,17 @@ public class Zwiazki_chem extends JPanel
                 
         }
         
+        Zasoby.wyjscie_text+="\n\nWynik mini gry \"Związki chemiczne\"\n";
+        
         if(spr1 && spr2 && spr3){
             suma=3;
+            Zasoby.wyjscie_text+="Stworzono o pożądany związek chemiczny  (+3 punkty)\n";
         }
         
-        System.out.println("suma pnkt "+suma);
+        else{
+            Zasoby.wyjscie_text+="Nie stworzono pożądanegi związeku chemicznego\n";
+        }
+        
         return suma;
     }    
         

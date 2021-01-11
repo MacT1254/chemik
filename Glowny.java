@@ -6,22 +6,24 @@
 
 package projekt;
 
-/**
- *
- * @author Mac
- */
+//++++Dokumentacja stworzona za pomoca programu javadoc++++++++++
 
- 
+/**
+ * Klasa uruchamijąca grę wywołująca wczytanie zasobów oraz ustawiająca wymiary okien
+ */
 public class Glowny
 {  
-
+/**
+ * Metoda uruchamiająca grę, wywołująca wczytanie zasobów oraz ustawiająca wymiary okien 
+  @param args //
+ */
     public static void main(String[] args)  
       {  
-          Tlo.wczytaj_obrazy();
-          Tlo.szerokosc_okna=1024;
-          Tlo.wysokosc_okna=768;
+          Zasoby.wczytaj_obrazy();
+          Zasoby.szerokosc_okna=1024;
+          Zasoby.wysokosc_okna=768;
           SilnikGry silnik= new SilnikGry();
-          silnik.poruszanie_postacia();
+          silnik.obsługa_klawiatury();
 
 
       }  

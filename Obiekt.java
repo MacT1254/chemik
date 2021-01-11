@@ -5,16 +5,31 @@
  */
 package projekt;
 
+
 /**
- *
- * @author Mac
- */
+     * Klasa obiektów  Stol, ktory ma granice i początek układu współrzędnych 
+     * 
+*/
 public class Obiekt {
-     int x=0,y=0;
-     int w=0,h=0;
-     int[] p_x= new int[4];
-     int[] p_y=new int[4];
-     
+     /** Współrzędna x stolu */
+     public int x=0;
+     /** Współrzędna y stolu */
+     public int y=0;
+     /** Szerokość stolu */
+     public int w=0;
+     /** Wysokość stolu */
+     public int h=0;
+     /**Współrzędne x wieszchołków - 0-lewy gorny róg, 1-prawy gorny róg, 2-lewy dolny róg */
+     public int[] p_x= new int[4];
+     /**Współrzędne y wieszchołków */
+     public int[] p_y=new int[4];
+     /**
+     * Konstruktor - ustawienie parametrów obiekty
+     * @param x Współrzędne x wieszchołków
+     * @param y Współrzędne y wieszchołków
+     * @param w szerokość obiektu
+     * @param h wysokość obiektu
+     */
     public Obiekt( int x,int y,int w,int h){
         this.x=x;
         this.y=y;

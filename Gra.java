@@ -6,56 +6,41 @@
 
 package projekt;
 
-/**
- *
- * @author Mac
+
+import javax.swing.JPanel;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.TexturePaint;
+import java.awt.Rectangle;
+import java.awt.Color;
+
+ /**
+ Panel graficzny głównej gry
  */
-import javax.swing.*;
-
-
-import java.awt.*;
-import java.util.ArrayList;
-
- 
-public class Gra extends JPanel
-{   int zmx=Postac.srodek_x;
-    int zmy=Postac.srodek_y;
+public class Gra extends JPanel{
     
-    Font czcinka=new Font("URW Chancery L", Font.BOLD, 21);
-    ArrayList<Stanowisko> lista_stan = new ArrayList<>();
-    ArrayList<Obiekt> lista_obiekt = new ArrayList<>();
+    private int zmx;
+    private int zmy;
+    private TexturePaint pos;
+    private Font czcionka=new Font("URW Chancery L", Font.BOLD, 21);
    
-public Gra (ArrayList<Obiekt> listaob,ArrayList<Stanowisko> listas){  
-    
-   lista_obiekt=listaob;
-   lista_stan=listas;
-   System.out.println();
-   
-  }  
-    
-   
-   @Override
+    @Override
     protected void paintComponent(Graphics g){
             
-        zmx=Postac.srodek_x-Postac.srednica_ciala/2;
+        zmx=Postac.srodek_x-Postac.srednica_ciala/2;    //ustawianie punktu początku obrazu
         zmy=Postac.srodek_y-Postac.srednica_ciala/2;
         Graphics2D g2 = (Graphics2D) g;
         
-        g.drawImage(Tlo.tlo0,0,0,null);
+        g.drawImage(Zasoby.tlo0,0,0,null);
       
-        TexturePaint pos = new TexturePaint(Tlo.postac, new Rectangle(zmx, zmy, 98, 105));
+        pos = new TexturePaint(Zasoby.postac, new Rectangle(zmx, zmy, 98, 105));
         g2.setPaint(pos);
         g.fillOval(zmx,zmy,Postac.srednica_ciala,Postac.srednica_ciala);
-        g.setColor(Color.RED);
-        g2.drawRect(lista_obiekt.get(0).x,lista_obiekt.get(0).y,lista_obiekt.get(0).w,lista_obiekt.get(0).h );
-        g2.drawRect(lista_obiekt.get(1).x,lista_obiekt.get(1).y,lista_obiekt.get(1).w,lista_obiekt.get(1).h );
-        g2.drawRect(lista_obiekt.get(2).x,lista_obiekt.get(2).y,lista_obiekt.get(2).w,lista_obiekt.get(2).h );
-      
+
         g.setColor(Color.BLACK);
-        
-        System.out.println("ddasdapunkty");
-        g.setFont(czcinka);
-        g.drawString("Punkty: "+Tlo.sumapunkt+"/10",800,35);
+        g.setFont(czcionka);
+        g.drawString("Punkty: "+Zasoby.sumapunkt+"/10",812,35);
         
         
     }

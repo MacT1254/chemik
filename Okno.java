@@ -4,14 +4,21 @@
  * and open the template in the editor.
  */
 package projekt;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
 
+/**
+ * Klasa obiektów okno, w której będą wyświetlane elementy graficzne
+ */
 public class Okno extends JFrame{
+    /**
+     * Konstruktor - ustawienie nazwy okna
+     * @param nazwa nazwa okna
+     */
+    
     Okno(String nazwa){
         
         super(nazwa);
-        setSize(Tlo.szerokosc_okna,Tlo.wysokosc_okna);
+        setSize(Zasoby.szerokosc_okna,Zasoby.wysokosc_okna);
         setResizable(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }

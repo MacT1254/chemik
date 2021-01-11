@@ -6,15 +6,16 @@
 package projekt;
 
 /**
- * 
- *
- * @author Mac
+ * Klasa przechowująca pozycje i średnice postaci
+ * @author Maciej Trzciński
  */
 public class Postac {
-    
-   static int srodek_x=500;
-   static int srodek_y=100;
-   static int srednica_ciala=100;
+    /** Współrzędna x Postaci */
+   public static int srodek_x=505;
+    /** Współrzędna y Postaci */
+   public static int srodek_y=315;
+    /** Średnica Postaci */
+   public static int srednica_ciala=100;
 
     
 }

@@ -9,19 +9,42 @@ import java.awt.Color;
  */
 
 /**
- *
- * @author Mac
+ *Klasa obiektu składnik zawierająca w sobie dane o miejscu pobierania, granicach miejsca pobierania, oraz zmiennych
+ * potrzebnych do obsługi podnoszenia i opuszczania składników 
  */
 public class Skladnik{
-    int x,y,xs,ys;
-    String podnosi;
-    String nazwa;
-    boolean wybrane;
-    Color kolor;
-    boolean w_poj;
-    Rectangle granice;
+    /**Współrzędna x początku pojeminka ze składnikiem*/
+    public int x;
+    /**Współrzędna y początku pojeminka ze składnikiem*/
+    public int y;
+    /**Współrzędna x miejsca opuszczenia składnika*/
+    public int xs;
+    /**Współrzędna y miejsca opuszczenia składnika*/
+    public int ys;
+    /**Zmienna okreslająca, co podnosi dany składnik */
+    public String podnosi;
+    /**nazwa składnika */
+    public String nazwa;
+    /** zmienna stanu okreslająca, czy składnik jest podniesiony*/
+    public boolean wybrane;
+    /**kolor składnika*/
+    public Color kolor;
+    /** zmienna stanu okreslająca, czy składnik jest w pojemniku*/
+    public boolean w_poj;
+    /** granice obszaru pobierania składnika*/
+    public Rectangle granice;
+    /**
+     * Konstruktor - ustawienie parametrów składników
+     * @param x Współrzędna x pojemnika ze składnikiem 
+     * @param y Współrzędna y pojemnika ze składnikiem 
+     * @param podnosi zmienna okreslająca, co podnosi dany składnik 
+     * @param wybrane zmienna stanu okreslająca, czy składnik jest podniesiony
+     * @param nazwa nazwa składnika
+     * @param kolor kolor składnika
+     */
     
     public Skladnik(int x, int y, String podnosi,boolean wybrane, String nazwa ,Color kolor ){
+        
         this.x=x;
         this.y=y;
         this.xs=0;
