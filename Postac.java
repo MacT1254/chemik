@@ -6,19 +6,16 @@
 package projekt;
 
 /**
+ * 
  *
  * @author Mac
  */
-public class Stanowisko {
+public class Postac {
+    
+   static int srodek_x=500;
+   static int srodek_y=100;
+   static int srednica_ciala=100;
 
-    public int run_point_x,run_point_y;
     
-    Stanowisko(int run_point_x, int run_point_y){
-        
-        this.run_point_x=run_point_x;
-        this.run_point_y=run_point_y;
-    }
 }
-    
-        
-        
+
