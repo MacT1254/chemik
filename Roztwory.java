@@ -37,11 +37,12 @@ public class Roztwory extends JPanel
     
     int wysokosc_zdj[] = new int[3];
     int szerokosc_zdj[] = new int[3];
-    float prog_kwas;
-    float stez_wynik;
+    double prog_kwas;
+    double stez_wynik_gr;
+    double stez_wynik_dol;
     
-    int [] ilosc_wody={100,0,500};  
-    int [] ilosc_kwasu={0,100,0};
+    double [] ilosc_wody={100,0,1000};  
+    double [] ilosc_kwasu={0,100,0};
     
     int [] punk_pol_x=new int [8];
     int [] punk_pol_y=new int [8];
@@ -61,12 +62,15 @@ public class Roztwory extends JPanel
     Point pozycja_myszy;
     
     public Roztwory(){
+        
         timer = new Timer(DELAY, this);
         timer.start();
         
         wode_do_kwasu=false;
-        prog_kwas=1/100;
-        stez_wynik=7/100;
+        prog_kwas=0.01;
+        
+        stez_wynik_gr=0.07;
+        stez_wynik_dol=0.05;
         
         punk_pol_x[0]=0;
         punk_pol_x[1]=0;
@@ -103,18 +107,19 @@ public class Roztwory extends JPanel
             granice_nacz[j]=new Rectangle();
         }
 
-     
-
-        
-    
     }
+    
+    
+    
+    
+    
     @Override
     protected void paintComponent(Graphics g){
        
         int x,y;
-        int ilosc_roz;
+        double ilosc_roz;
         double ep=0.001;
-        float procent_kw;
+        double procent_kw;
         
         PointerInfo pi=MouseInfo.getPointerInfo();
         Point p = pi.getLocation();
@@ -127,11 +132,11 @@ public class Roztwory extends JPanel
         
          for(int i=0;i<3;i++){
             if(podniesiono_nacz[i]){
-               punk_poz_n.get(i).x=p.x-szerokosc_zdj[i]/2;
+               punk_poz_n.get(i).x=p.x-szerokosc_zdj[i]/2+50;
                punk_poz_n.get(i).y=p.y-wysokosc_zdj[i]/2;
             }
             ilosc_roz=ilosc_kwasu[i]+ilosc_wody[i];
-            procent_kw=(float)ilosc_kwasu[i]/(float)ilosc_roz;
+            procent_kw=ilosc_kwasu[i]/ilosc_roz;
             
             if(ilosc_kwasu[i]==0){
               tekst1="wody";
@@ -149,10 +154,9 @@ public class Roztwory extends JPanel
             x=punk_poz_n.get(i).x;
             y=punk_poz_n.get(i).y+odstep_tekstu+wysokosc_zdj[i];
             
-            
-            tekst1=ilosc_roz+" ml "+tekst1+" "+tekst2;
+            tekst1=(int)ilosc_roz+" ml "+tekst1+" "+tekst2;
             g.drawString(tekst1, x, y);
-            System.out.println(tekst1);
+
                 
         }
         
@@ -168,18 +172,13 @@ public class Roztwory extends JPanel
         }
         wzor_naczynia2=new Polygon(punk_wz_nacz_x,punk_wz_nacz_y,liczba_punkt);
         
-        
-        
-        
-        
-        //g2.drawImage(Tlo.naczynie1,punk_poz_n.get(0).x,punk_poz_n.get(0).y,null);
-        //g2.drawImage(Tlo.naczynie2,punk_poz_n.get(1).x,punk_poz_n.get(1).y,null);
-        
-        
-        //nacz1
+
         boolean narys_dwa_nacz=false;
+        
         for(int i=0;i<2;i++){
+            
             //wybrane naczynie musi być narysowane ostatnie
+            
             if(!podniesiono_nacz[0] ^ narys_dwa_nacz){
                 granice_nacz[0]=wzor_naczynia1.getBounds();
                 TexturePaint textura_nacz1 = new TexturePaint(Tlo.naczynie1,granice_nacz[0]);
@@ -202,25 +201,22 @@ public class Roztwory extends JPanel
             }
             narys_dwa_nacz=true;
         }
-            //nacz3
-            //TexturePaint textura_nacz3 = new TexturePaint(Tlo.naczynie3,new Rectangle(punk_poz_n.get(0).x,punk_poz_n.get(0).y,szerokosc_zdj[2],wysokosc_zdj[2]));
-        g.setColor(Color.BLACK);
-        g2.draw(granice_nacz[0]);
-        g2.draw(granice_nacz[1]);
-        g2.drawRect(p.x,p.y,10,10);
+         
+
         if(wode_do_kwasu && licz_animac>1)wlano_wod_do_kw(g);
-        System.out.println("0,0 pol "+wzor_naczynia1.contains(78, 146));
-            
-        
-        
-        
-        
-       
+
     }
+    
+    
+    
+    
+    
     void kliknietolewy (Point p){
+        
         boolean kliknieto []= new boolean [3];
         boolean podniesiono=false;  //podniesiono jakies naczynie
-        //kliknieci powoduje wyb naczynia
+        
+        //klikniecie powoduje wyb naczynia
         //klikniecie ponowne powoduje odz naczynia
         
         for(int i=0;i<granice_nacz.length;i++){//sprawdzay co kliknieto i czy jest wybrane jakies naczynie
@@ -253,7 +249,6 @@ public class Roztwory extends JPanel
     
     void kliknietoprawy (Point p){
         
-        System.out.println("prawy");
         wode_do_kwasu=false;
         boolean kliknieto []= new boolean [3];
         boolean pod_dow=false;
@@ -279,8 +274,6 @@ public class Roztwory extends JPanel
             }
         }
         
-        
-        
         for(int j=0;j<podniesiono_nacz.length;j++){
             klik_dow=klik_dow || kliknieto[j];
             if(podniesiono_nacz[j]){
@@ -291,7 +284,7 @@ public class Roztwory extends JPanel
         if((klik_dow) && (pod_dow)){
             czy_kw_do=spr_procent(prog_kwas,nalewam_do);
             czy_kw_od=spr_procent(prog_kwas,nalewam_od);
-            System.out.println("czy od to kwas "+czy_kw_od+" czy do to kwas "+czy_kw_do);
+
             if((czy_kw_od==false)&&(czy_kw_do==true)){// nie wlewaj wody do kwasu
               
                 wode_do_kwasu=true;
@@ -303,29 +296,38 @@ public class Roztwory extends JPanel
         }
     }
     
+    
+    
+    
+    
     void przelewanie (int odktr, int doktr){
        
-        if(ilosc_wody[odktr]>5){
-            ilosc_wody[odktr]-=5;
-            ilosc_wody[doktr]+=5;
+        double ilosc_roztw=ilosc_wody[odktr]+ilosc_kwasu[odktr];
+        double pr_kwasu=ilosc_kwasu[odktr]/ilosc_roztw;
+        
+        if(ilosc_roztw>5){
+            ilosc_wody[odktr]-=5*(1-pr_kwasu);
+            ilosc_wody[doktr]+=5*(1-pr_kwasu);
+            ilosc_kwasu[doktr]+=5*pr_kwasu;
+            ilosc_kwasu[odktr]-=5*pr_kwasu;
         }
         
-        if(ilosc_kwasu[odktr]>5){
-            ilosc_kwasu[doktr]+=5;
-            ilosc_kwasu[odktr]-=5;
-        }
+       
     }
     
     
     
     
     
-    boolean spr_procent (float pr, int ktr){
-        float procent_kwasu=pr;
-        procent_kwasu=(float)ilosc_kwasu[ktr]/((float)ilosc_kwasu[ktr]+(float)ilosc_wody[ktr]);
+    boolean spr_procent (double pr, int ktr){
         
+        double procent_kwasu;
+        double ilosc_roztw=ilosc_kwasu[ktr]+ilosc_wody[ktr];
+
+        procent_kwasu=ilosc_kwasu[ktr]/(ilosc_roztw);
+
         if(procent_kwasu>pr){
-         return true;
+            return true;
         }
         
         return false;
@@ -336,9 +338,11 @@ public class Roztwory extends JPanel
     
     
     void wlano_wod_do_kw (Graphics g){
+        
         int w=Tlo.szerokosc_okna;
         int h=Tlo.wysokosc_okna;
         double b;
+        
         for(int i=0;i<40;i++){ 
             b=Math.sin(i)*700+300;
             b=Math.abs(b);
@@ -353,17 +357,32 @@ public class Roztwory extends JPanel
        licz_animac--;
    }
     
+    
+    
+    
+    
     @Override
     public void actionPerformed(ActionEvent e) {
-
         repaint();
     }
     
+    
+    
+    
+    
     int zatwierdz(){
+
         int suma=0;
+        boolean spr1;
+        boolean spr2;
         
         for(int i=0;i<3;i++){
-            if(spr_procent(stez_wynik,i)){
+            
+            spr1=spr_procent(stez_wynik_dol,i);
+            spr2=spr_procent(stez_wynik_gr,i);
+            spr2=!spr2;
+
+            if(spr1&&spr2){
                 suma=3;
             }
         }
@@ -379,15 +398,3 @@ public class Roztwory extends JPanel
         return suma;
     }
 }
-
-/*
- for(int i=0;true;i++){
-            if(i>1000){i=0;}
-            if(i==1000){
-                PointerInfo pi=MouseInfo.getPointerInfo();
-                Point p = pi.getLocation(); 
-                System.out.println(p.getX());
-            }
-        
-        }
-*/

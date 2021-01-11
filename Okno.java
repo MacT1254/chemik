@@ -9,10 +9,11 @@ import java.awt.*;
 
 public class Okno extends JFrame{
     Okno(String nazwa){
+        
         super(nazwa);
         setSize(Tlo.szerokosc_okna,Tlo.wysokosc_okna);
-        
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
     
 }

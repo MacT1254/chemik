@@ -14,14 +14,19 @@ import java.awt.PointerInfo;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 
 
 
-public class Zwiazki_chem extends JPanel{
+public class Zwiazki_chem extends JPanel
+    implements ActionListener{
+    Timer timer;
+    static final int DELAY=60;
     
     Rectangle pojemnik;
     Point [] trojkat;
@@ -36,12 +41,12 @@ public class Zwiazki_chem extends JPanel{
     int [] buf3y;
 
     Skladnik siarka;
-    Skladnik NaOh;
+    Skladnik NaOH;
     Skladnik wegiel;
     Skladnik manganian;
     Skladnik HCl;
     Skladnik puste_nacz;
-    ArrayList<Skladnik> Substancje;
+    ArrayList<Skladnik> substancje;
     
     PoruszajacyObiekt lyzka;
     PoruszajacyObiekt pipeta;
@@ -49,6 +54,9 @@ public class Zwiazki_chem extends JPanel{
     
     public Zwiazki_chem(){
         
+        timer = new Timer(DELAY, this);
+        timer.start();
+
         this.buf1y = new int [11];
         this.buf1x = new int [11];
         this.buf2y = new int [14];
@@ -62,31 +70,33 @@ public class Zwiazki_chem extends JPanel{
         this.trojkat=new Point[3];
         
         this.siarka = new Skladnik(166,570,"lyzka",false,"siarka",Color.YELLOW);
-        this.NaOh = new Skladnik(338,570,"lyzka",false,"NaOh",Color.WHITE);
+        this.NaOH = new Skladnik(338,570,"lyzka",false,"NaOH",Color.WHITE);
         this.wegiel = new Skladnik(515,571,"lyzka",false,"wegiel",Color.BLACK);
         this.manganian = new Skladnik(673,570,"lyzka",false,"manganian",Color.MAGENTA);
         this.HCl = new Skladnik(847,512,"pipeta",false,"HCl",Color.BLUE);
         this.puste_nacz = new Skladnik(847,512,"pipeta",false,"HCl",Color.BLUE);
-        this.Substancje = new ArrayList<>();
+        this.substancje = new ArrayList<>();
         
-        this.lyzka = new PoruszajacyObiekt(0,0,true,"lyzka");
-        this.pipeta = new PoruszajacyObiekt(0,0,false,"pipeta");
-        this.narzedzia = new ArrayList<>();
         
-        System.out.println("krelok was here");
+        
         //dodanie skladnikow do listy
         
-        Substancje.add(siarka);
-        Substancje.add(NaOh);
-        Substancje.add(wegiel);
-        Substancje.add(manganian);
-        Substancje.add(HCl);
+        substancje.add(siarka);
+        substancje.add(NaOH);
+        substancje.add(wegiel);
+        substancje.add(manganian);
+        substancje.add(HCl);
         //dodanie narzedzdo listy
+        
+        //kszztalt pipety
+        int ilosc_sk=substancje.size();
+        
+        this.lyzka = new PoruszajacyObiekt(0,0,true,"lyzka",ilosc_sk);
+        this.pipeta = new PoruszajacyObiekt(0,0,false,"pipeta",ilosc_sk);
+        this.narzedzia = new ArrayList<>();
+        
         narzedzia.add(lyzka);
         narzedzia.add(pipeta);
-        //kszztalt pipety
-
-       
         
         //kszztalt lyzki
         p_lyzki[0]=new Point(0,9);//0 koncowka
@@ -120,14 +130,12 @@ public class Zwiazki_chem extends JPanel{
             p_pipety[14-i]= new Point(x,y);
         }
         
-        for(Skladnik skl: Substancje){
+        for(Skladnik skl: substancje){
             Rectangle prost =new Rectangle (skl.x,skl.y,120,80);
             if("HCL".equals(skl.nazwa)){
                 prost =new Rectangle (skl.x,skl.y,125,80);
             }
             skl.granice=prost;
-            System.out.println(skl.x);
-            System.out.println(skl.granice);
             
         }
 
@@ -141,98 +149,98 @@ public class Zwiazki_chem extends JPanel{
         
     }
     
-@Override
-protected void paintComponent(Graphics g){
+    @Override
+    protected void paintComponent(Graphics g){
 
-    Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g;
 
-    PointerInfo pi=MouseInfo.getPointerInfo();
-    Point p = pi.getLocation();
+        PointerInfo pi=MouseInfo.getPointerInfo();
+        Point p = pi.getLocation();
 
-    g2.drawImage(Tlo.tlo3,0,0,null);
+        g2.drawImage(Tlo.tlo3,0,0,null);
 
-    for(PoruszajacyObiekt narz:narzedzia){
-        if(narz.wybrane){
-           System.out.println("wybrane");
-           narz.x=p.x-narz.szerokosc/2;
-           narz.y=p.y-narz.wysokosc/2;
+        for(PoruszajacyObiekt narz:narzedzia){
+            if(narz.wybrane){
 
-           System.out.println("wybx "+narz.x);
-           System.out.println("wyby "+narz.y);
-        }
-    }
-
-    for(int i=0; i<p_lyzki.length;i++){
-        buf1x[i]=lyzka.x+p_lyzki[i].x;
-        buf1y[i]=lyzka.y+p_lyzki[i].y;             
-    }
-
-    pipeta.koncowka=new Point (144+pipeta.x,144+pipeta.y);
-    lyzka.koncowka=new Point (156+lyzka.x,144+lyzka.y);
-
-    lyzka.polygon=new Polygon(buf1x,buf1y,p_lyzki.length);
-    lyzka.granice=lyzka.polygon.getBounds();
-
-    for(int i=0; i<p_pipety.length;i++){
-        buf2x[i]=pipeta.x+p_pipety[i].x;
-        buf2y[i]=pipeta.y+p_pipety[i].y;             
-    }
-    pipeta.polygon=new Polygon(buf2x,buf2y,p_pipety.length);
-    pipeta.granice=pipeta.polygon.getBounds();
-
-
-    TexturePaint textura_lyzki = new TexturePaint(Tlo.lyzka,lyzka.granice);
-    g2.setPaint(textura_lyzki);
-    g.fillPolygon(lyzka.polygon);
-    g.setColor(Color.RED);
-    g.drawPolygon(lyzka.polygon);
-    g2.draw(lyzka.granice);
-
-
-    for(Skladnik skl:Substancje){
-        if(skl.wybrane && "lyzka".equals(skl.podnosi)){
-           g.setColor(skl.kolor);
-           g2.fillOval(lyzka.koncowka.x,lyzka.koncowka.y,20,20);
-        }
-        if(skl.w_poj){
-            System.out.println("++++++++++wpoj+++++");
-            g.setColor(skl.kolor);
-
-            for(int i=0;i<trojkat.length;i++){
-
-                buf3x[i]=trojkat[i].x+skl.xs;
-                buf3y[i]=trojkat[i].y+skl.ys;
+               narz.x=p.x-narz.szerokosc/2;
+               narz.y=p.y-narz.wysokosc/2-20;
 
             }
+        }
 
-            Polygon buf=new Polygon(buf3x,buf3y,3);
-            g2.fillPolygon(buf);
+        for(int i=0; i<p_lyzki.length;i++){
+            buf1x[i]=lyzka.x+p_lyzki[i].x;
+            buf1y[i]=lyzka.y+p_lyzki[i].y;             
         }
-        if(skl.wybrane && "pipeta".equals(skl.podnosi)){
-            TexturePaint textura_pipety2 = new TexturePaint(Tlo.pipeta2,pipeta.granice);
-            g2.setPaint(textura_pipety2);
+
+        pipeta.koncowka=new Point (144+pipeta.x,144+pipeta.y);
+        lyzka.koncowka=new Point (156+lyzka.x,144+lyzka.y);
+
+        lyzka.polygon=new Polygon(buf1x,buf1y,p_lyzki.length);
+        lyzka.granice=lyzka.polygon.getBounds();
+
+        for(int i=0; i<p_pipety.length;i++){
+            buf2x[i]=pipeta.x+p_pipety[i].x;
+            buf2y[i]=pipeta.y+p_pipety[i].y;             
         }
-        else{
-            TexturePaint textura_pipety = new TexturePaint(Tlo.pipeta,pipeta.granice);
-            g2.setPaint(textura_pipety);
+        
+        pipeta.polygon=new Polygon(buf2x,buf2y,p_pipety.length);
+        pipeta.granice=pipeta.polygon.getBounds();
+        
+        for(Skladnik skl:substancje){//rysowanie skladnikow w pojemniku
+            if(skl.w_poj){
+
+                    g.setColor(skl.kolor);
+
+                    for(int i=0;i<trojkat.length;i++){
+
+                        buf3x[i]=trojkat[i].x+skl.xs;
+                        buf3y[i]=trojkat[i].y+skl.ys;
+
+                    }
+
+                    Polygon buf=new Polygon(buf3x,buf3y,3);
+                    g2.fillPolygon(buf);
+            }
         }
+
+        TexturePaint textura_lyzki = new TexturePaint(Tlo.lyzka,lyzka.granice);//rysowanie lyzki
+        g2.setPaint(textura_lyzki);
+        g.fillPolygon(lyzka.polygon);
+        
+        for(Skladnik skl:substancje){//rysowanie skladnikow na lyzce i zmiana tekstury pipety
+            if(skl.wybrane && "lyzka".equals(skl.podnosi)){
+              
+               g.setColor(skl.kolor);
+               g2.fillOval(lyzka.koncowka.x,lyzka.koncowka.y,20,20);
+            }
+            
+            if(skl.wybrane && "pipeta".equals(skl.podnosi)){
+                TexturePaint textura_pipety2 = new TexturePaint(Tlo.pipeta2,pipeta.granice);
+                g2.setPaint(textura_pipety2);
+            }
+            else{
+                TexturePaint textura_pipety = new TexturePaint(Tlo.pipeta,pipeta.granice);
+                g2.setPaint(textura_pipety);
+            }
+
+        }
+        
+        
+
+        g.fillPolygon(pipeta.polygon);
+        g.setColor(Color.RED);
+        
+       
 
     }
-
-    g.fillPolygon(pipeta.polygon);
-    g.setColor(Color.RED);
-    g.drawPolygon(pipeta.polygon);
-    g2.draw(pipeta.granice);   
-
-
-
-
-
-}
+    
+    
+    
+    
+    
         void kliknietolewy (Point KM){
             
-            System.out.println("++++++++++++++++++++++");
-
             int ilosc_narz=narzedzia.size();
             boolean podniesione_narz=false;
             boolean kliknieto_narz []= new boolean [ilosc_narz];
@@ -242,71 +250,66 @@ protected void paintComponent(Graphics g){
             }
             
             
-            int iter2=0;
+            int iter1=0;
             for(PoruszajacyObiekt narz: narzedzia){//sprawdzay co kliknieto
                 podniesione_narz=narz.wybrane || podniesione_narz;
-                System.out.println("kliknoles w cos "+narz.granice.contains(KM));
+
                 if(narz.granice.contains(KM)){
-                    System.out.println("klik narz iter="+iter2);
                     
-                    kliknieto_narz[iter2]=true;
-                    System.out.println(narz.nazwa);
-                    break;
+                    kliknieto_narz[iter1]=true;
                 } 
-                iter2++;
+                iter1++;
             }
             
-            int iter4=0;
+            
+            int iter2=0;
             for(PoruszajacyObiekt narz: narzedzia){
-                
-                System.out.println("czu jest cos podniesione" +podniesione_narz);
-                System.out.println("czy kliknieto" +narz.nazwa +" | "+kliknieto_narz[iter4]);
-                
-                if(podniesione_narz==false && kliknieto_narz[iter4]){//jak nie jest podniesione narzedzie
-                    narz.wybrane=true;//to klikniete jest wybierane 
-                    System.out.println("podniesiono"+narz.nazwa);
+                     
+                if(podniesione_narz==false && kliknieto_narz[iter2]){//jak nie jest podniesione narzedzie
+                    narz.wybrane=true;
                     podniesione_narz=true;
                 }
                 
-                else if(kliknieto_narz[iter4]&&narz.wybrane) {//jak podniesiono jakies naczynie i  kliknieto to narzedzie
+                else if(kliknieto_narz[iter2]&&narz.wybrane) {//jak podniesiono jakies naczynie i  kliknieto to narzedzie
                     narz.wybrane=false;
-                    System.out.println("opuszczono"+narz.nazwa);
                 }
-            iter4++;
+                
+            iter2++;
             }
         }
         
+        
+        
+        
     
         void kliknietoprawy (){
-        System.out.println("==========================");
-        int ilosc_sk=Substancje.size();
-        
-        boolean kliknieto_sk []= new boolean [ilosc_sk];
 
-        boolean podniesione_sk=false;
-       
+        int ilosc_sk=substancje.size();
         
+ 
         int iter1=0;
-        
-        for(Skladnik skl: Substancje){//sprawdzay co kliknieto
-            
-            podniesione_sk=skl.wybrane || podniesione_sk;
-            
+        for(Skladnik skl: substancje){//sprawdzamy co kliknieto
+
             for(PoruszajacyObiekt narz: narzedzia){
                 
-               if( skl.granice.contains(narz.koncowka) && narz.nazwa.equals(skl.podnosi) ){
-                    System.out.println(skl.nazwa);
-                    System.out.println("iter: "+iter1);
-                    kliknieto_sk[iter1]=true;
-                    
+               if( skl.granice.contains(narz.koncowka) && narz.nazwa.equals(skl.podnosi) ){//jak kliknieto miejsce pobierania skladnika
+                   
+                    narz.klik[iter1]=true;  
                }
                
-               if( pojemnik.contains(narz.koncowka) && skl.wybrane && !skl.w_poj ){
+               else  {
+                   
+                   narz.klik[iter1]=false;
+               }
+               
+               //wsadzamy do poj
+               if( pojemnik.contains(narz.koncowka) && skl.wybrane && !skl.w_poj && narz.zajete && narz.nazwa.equals(skl.podnosi)){////jak kliknieto miejsce pobierania skladnika i skladnik jest w narzedziu i nie w pojemniku
+                   
                     skl.xs=narz.koncowka.x;
                     skl.ys=narz.koncowka.y;
                     skl.w_poj=true;
                     skl.wybrane=false;
-                    System.out.println(skl.nazwa);         
+                    narz.zajete=false;
                }
                
             }
@@ -314,20 +317,68 @@ protected void paintComponent(Graphics g){
         }
         
     
-        int iter3=0;
-        for(Skladnik skl: Substancje){
+        int iter2=0;
+        for(Skladnik skl: substancje){
             
-            if(podniesione_sk==false){//jak nie podniesiono naczynia
-                skl.wybrane=kliknieto_sk[iter3];//to klikniete jest wybierane 
+            for(PoruszajacyObiekt narz: narzedzia){
+                
+                if(narz.zajete==false && narz.klik[iter2] && !narz.zajete ){//jak nie w narzedziu nie ma skladnika i pobiera
+
+                    skl.wybrane=true;//to bierzemy skladnik
+                    narz.zajete=true;
+                }
+                
+                else if(narz.klik[iter2]&&skl.wybrane && narz.zajete) {//jak podniesiono jakis skladnik i kliknieto wybrane naczynie
+                    skl.wybrane=false;
+                    narz.zajete=false;
+                }
+                
             }
-            else if(kliknieto_sk[iter3]&&skl.wybrane) {//jak podniesiono jakies naczynie i kliknieto wybrane naczynie
-                skl.wybrane=false;
-            }
-            
-        iter3++;    
+        iter2++;    
         }
        
     }
+        
+    int zatwierdz(){
+        
+        int suma=0;
+        boolean spr1=false;
+        boolean spr2=false;
+        boolean spr3=true;      
+        
+        for(Skladnik skl: substancje){
+            if( "NaOH".equals(skl.nazwa) ){
+               if(skl.w_poj){
+                    spr1=true;
+                }
+            }
+            else if ( "HCl".equals(skl.nazwa) ){
+                if(skl.w_poj){
+                    spr2=true;
+                }
+            }
+            else{
+                if(skl.w_poj){
+                    spr3=false;
+                }
+            }
+                
+                
+        }
+        
+        if(spr1 && spr2 && spr3){
+            suma=3;
+        }
+        
+        System.out.println("suma pnkt "+suma);
+        return suma;
+    }    
+        
+        
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        repaint();
+   }
 }
     
 

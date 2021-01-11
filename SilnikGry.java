@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.awt.*;
 import java.lang.Object;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 
 
 /**
@@ -29,14 +30,27 @@ public class SilnikGry {
     static int stol_sz=388;
     static int stol_wy=143;
     
+    static final String pomoc_gra="pomoc_gra";
+    static final String pomoc_wz="pomoc_wz";
+    static final String pomoc_roz="pomoc_roz";
+    static final String pomoc_zwi="pomoc_zwi";
+    
     int pozycja_zatx=661;
     int pozycja_zaty=101;
     int szerokosc_przyc=879-661;
     int wysokosc_przyc=222-101;
+    
+    boolean minigra1_uruch;
+    boolean minigra2_uruch;
+    boolean minigra3_uruch;
+    
+    
     Font czcinka=new Font("URW Chancery L", Font.BOLD, 21);
     
+    Point KM_wz;
     Point KM_roz;
     Point KM_zwi;
+    
 //tworzenie obiektów
     Obiekt stolA;
     Obiekt stolB;
@@ -52,6 +66,7 @@ public class SilnikGry {
     Stanowisko stol_z_papierami;
     Stanowisko stol_z_roztw;
     Stanowisko stol_z_zwi;
+    Stanowisko wyjscie;
     
     Gra nowagra;
     Okno okno_gr; 
@@ -71,7 +86,12 @@ public class SilnikGry {
        
         
    long startTime = System.currentTimeMillis(); 
+   
     SilnikGry(){
+        
+        minigra1_uruch=false;
+        minigra2_uruch=false;
+        minigra3_uruch=false;
        
         lista_obiekt.add(new Obiekt(stol_A_pos_x, stol_A_pos_y, stol_sz, stol_wy));
         lista_obiekt.add(new Obiekt(stol_B_pos_x, stol_B_pos_y, stol_sz, stol_wy));
@@ -85,224 +105,363 @@ public class SilnikGry {
         stol_z_papierami = new Stanowisko(324,127);
         stol_z_roztw = new Stanowisko(242,600);
         stol_z_zwi = new Stanowisko(760,590);  
+        wyjscie = new Stanowisko(1053,160);  
         
         lista_stan.add(stol_z_papierami);
         lista_stan.add(stol_z_roztw);
         lista_stan.add(stol_z_zwi);
+        lista_stan.add(wyjscie);
         
         nowagra = new Gra(lista_obiekt,lista_stan);
         okno_gr = new Okno("Chemik");
         okno_gr.setVisible(true);
         okno_gr.add(nowagra);
+        okno_gr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
    
     }  
     
-void poruszanie_postacia(){   
+    void poruszanie_postacia(){   
 
-    okno_gr.addKeyListener(new KeyAdapter(){
+        okno_gr.addKeyListener(new KeyAdapter(){
 
-       public void keyPressed(KeyEvent ke){
+           public void keyPressed(KeyEvent ke){
 
-           if(ke.getKeyCode()==ke.VK_RIGHT){
+               if(ke.getKeyCode()==ke.VK_RIGHT){
 
-                if(sprawdzkolizje(false,false,false,true)){
-                    System.out.println("kolizja"+Postac.srodek_y);
-                }
+                    if(sprawdzkolizje(false,false,false,true)){
 
-               else { 
-                    System.out.println("right"+Postac.srodek_y);
-                    Postac.srodek_x+=krok_chodz;
-                    okno_gr.repaint();
-               }
-           }
+                    }
 
-           if(ke.getKeyCode()==ke.VK_LEFT){
+                   else { 
 
-                if(sprawdzkolizje(false,false,true,false)){
-                    System.out.println("kolizja"+Postac.srodek_y);
-                }
-
-                else { 
-                    System.out.println("left"+Postac.srodek_y);
-                    Postac.srodek_x-=krok_chodz;
-                    okno_gr.repaint();
-               }
-           }
-
-           if(ke.getKeyCode()==ke.VK_UP){
-
-               if(sprawdzkolizje(true,false,false,false)){
-                    System.out.println("kolizja"+Postac.srodek_y);
+                        Postac.srodek_x+=krok_chodz;
+                        okno_gr.repaint();
+                   }
                }
 
-               else { 
-                    System.out.println("up"+Postac.srodek_y);
-                    Postac.srodek_y-=krok_chodz;
-                    okno_gr.repaint();
+               if(ke.getKeyCode()==ke.VK_LEFT){
+
+                    if(sprawdzkolizje(false,false,true,false)){
+
+                    }
+
+                    else { 
+
+                        Postac.srodek_x-=krok_chodz;
+                        okno_gr.repaint();
+                   }
                }
-           }
 
-           if(ke.getKeyCode()==ke.VK_DOWN){
+               if(ke.getKeyCode()==ke.VK_UP){
 
-                if(sprawdzkolizje(false,true,false,false)){
-                    System.out.println("kolizja"+Postac.srodek_y);
-                }
-
-                else { 
-                    System.out.println("down"+Postac.srodek_y);
-                    Postac.srodek_y+=krok_chodz;
-                    okno_gr.repaint();
-                }
-           }
-
-           if(ke.getKeyCode()==ke.VK_M){
-               int odl;
-               for(int m=0; m < lista_stan.size(); m++){
-
-                   odl=odlegloscdokwa(Postac.srodek_x,Postac.srodek_y,lista_stan.get(m).run_point_x,lista_stan.get(m).run_point_y);
-
-                   if(odl<odl_min){
-                       System.out.println(":) "+odl+" Postacx "+Postac.srodek_x+" Postacy "+Postac.srodek_y+" runx "+lista_stan.get(m).run_point_x+" runy"+lista_stan.get(m).run_point_y);
-                       if(m==0) {
-                           inic_minigry_wzory();
-                       }
-                       if(m==1) inic_minigry_roztw();
-                       if(m==2) inic_minigry_zwi();
+                   if(sprawdzkolizje(true,false,false,false)){
 
                    }
-               }  
+
+                   else { 
+
+                        Postac.srodek_y-=krok_chodz;
+                        okno_gr.repaint();
+                   }
+               }
+
+               if(ke.getKeyCode()==ke.VK_DOWN){
+
+                    if(sprawdzkolizje(false,true,false,false)){
+
+                    }
+
+                    else { 
+
+                        Postac.srodek_y+=krok_chodz;
+                        okno_gr.repaint();
+                    }
+               }
+
+               if(ke.getKeyCode()==ke.VK_M){
+                   int odl;
+                   for(int m=0; m < lista_stan.size(); m++){
+
+                       odl=odlegloscdokwa(Postac.srodek_x,Postac.srodek_y,lista_stan.get(m).run_point_x,lista_stan.get(m).run_point_y);
+
+                       if(odl<odl_min){
+
+                           if(m==0 && minigra1_uruch==false) {
+                               inic_minigry_wzory();
+                               minigra1_uruch=true;
+                           }
+                           if(m==1 && minigra2_uruch==false) {
+                               inic_minigry_roztw();
+                               minigra1_uruch=true;
+                           }
+                           if(m==2 && minigra3_uruch==false){
+                               inic_minigry_zwi();
+                               minigra1_uruch=true;
+                           }
+                           if (m==3){
+                               wyjscie();
+                           }
+                       }
+                   }  
+               }
+               
+               if(ke.getKeyCode()==ke.VK_P){
+                   inic_pomoc(pomoc_gra);
+               }
+               
+   
            }
-       }
-   });
-}
-void inic_minigry_wzory(){
-     
-    minigra1 = new Wzory();
-    okno_wz = new Okno("Wzory");
-    zatwierdz_wz = new Button("Zatwierdż");
-    okno_wz.add(minigra1);
+       });
+    }
+    void reset(){
+        Postac.srodek_x=500;
+        Postac.srodek_y=100;
+        minigra1_uruch=false;
+        minigra2_uruch=false;
+        minigra3_uruch=false;
+        Tlo.sumapunkt=0;
+    }
+    
+    void inic_pomoc(String plik){
+      
+        Pomoc pomoc = new Pomoc(plik);
+        Okno okno_pomocy = new Okno("Pomoc");
+        pomoc.setBackground(Color.white);
+        okno_pomocy.add(pomoc);
+        okno_pomocy.setVisible(true);
+    }
 
-    zatwierdz_wz.setBounds(pozycja_zatx,pozycja_zaty,szerokosc_przyc,wysokosc_przyc);
-    zatwierdz_wz.setFont(czcinka);
-    zatwierdz_wz.addActionListener(new B1());
-    minigra1.add(zatwierdz_wz);
 
-    okno_wz.setVisible(true);
-    
-    
-}
-    
-void inic_minigry_roztw(){
+
+    void inic_minigry_wzory(){
+
+        minigra1 = new Wzory();
+        okno_wz = new Okno("Wzory");
+        zatwierdz_wz = new Button("Zatwierdż");
+        okno_wz.add(minigra1);
+
+        zatwierdz_wz.setBounds(pozycja_zatx,pozycja_zaty,szerokosc_przyc,wysokosc_przyc);
+        zatwierdz_wz.setFont(czcinka);
+        zatwierdz_wz.addActionListener(new B1());
+        minigra1.add(zatwierdz_wz);
+
+        okno_wz.setVisible(true);
         
-    minigra2 = new Roztwory();
-    okno_roz = new Okno("Roztwory");
-    zatwierdz_roz = new Button("Zatwierdż");
-    okno_roz.add(minigra2);
-    zatwierdz_roz.setBounds(679,8,szerokosc_przyc,wysokosc_przyc);
-    zatwierdz_roz.setFont(czcinka);
-    zatwierdz_roz.addActionListener(new B2());
-    minigra2.add(zatwierdz_roz);
-    minigra2.setLayout(null);
-  
-       EventQueue.invokeLater(() -> {
-            okno_roz.repaint();
+        okno_wz.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent mewz){
+            KM_wz=mewz.getPoint();
+
+            if(mewz.getButton()==MouseEvent.BUTTON2){//kliknieto lewy
+                 inic_pomoc(pomoc_wz);
+            }
+            }
+        });
             
+        okno_wz.addKeyListener(new KeyAdapter(){
+            
+        @Override
+        public void keyPressed(KeyEvent kewz){
+              System.out.println("jhbkgbhjbhjhjb");
+               if(kewz.VK_P==kewz.getKeyCode()){
+                   inic_pomoc(pomoc_wz);
+               }
+           }
         });
 
 
-    okno_roz.addMouseListener(new MouseAdapter(){
-        public void mouseClicked(MouseEvent meroz){
-        KM_roz=meroz.getPoint();
+    }
+    
+    
+    
+    
+    
+    void inic_minigry_roztw(){
 
-        if(meroz.getButton()==MouseEvent.BUTTON1){//kliknieto lewy
-            minigra2.kliknietolewy(KM_roz);
-            okno_roz.repaint();
+        minigra2 = new Roztwory();
+        okno_roz = new Okno("Roztwory");
+        zatwierdz_roz = new Button("Zatwierdż");
+        okno_roz.add(minigra2);
+        zatwierdz_roz.setBounds(679,8,szerokosc_przyc,wysokosc_przyc);
+        zatwierdz_roz.setFont(czcinka);
+        zatwierdz_roz.addActionListener(new B2());
+        minigra2.add(zatwierdz_roz);
+        minigra2.setLayout(null);
+        
+
+        EventQueue.invokeLater(() -> {
+             okno_roz.repaint();
+
+         });
+
+
+        okno_roz.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent meroz){
+            KM_roz=meroz.getPoint();
+
+            if(meroz.getButton()==MouseEvent.BUTTON1){//kliknieto lewy
+                minigra2.kliknietolewy(KM_roz);
+                okno_roz.repaint();
+            }
+            
+            if(meroz.getButton()==MouseEvent.BUTTON2){//kliknieto srod
+                inic_pomoc(pomoc_roz);
+                
+            }
+            
+            if(meroz.getButton()==MouseEvent.BUTTON3){//kliknieto prawy
+                minigra2.kliknietoprawy(KM_roz);
+                okno_roz.repaint();
+            }
+            }
+        });
+        
+        okno_wz.addKeyListener(new KeyAdapter(){
+        @Override   
+        public void keyPressed(KeyEvent ke){
+
+            if(ke.getKeyCode()==ke.VK_P){
+                inic_pomoc(pomoc_roz);
+            }
         }
-        if(meroz.getButton()==MouseEvent.BUTTON3){//kliknieto prawy
-            minigra2.kliknietoprawy(KM_roz);
-            okno_roz.repaint();
-        }
-        }
-    });
-    
-    okno_roz.setVisible(true);
-    
-  
-          //odrysuj kolejny ekran gry (nowe pozycje obiektów - symulacja ruchu)
-          okno_roz.repaint();
-     
+        });
+        
+        okno_roz.setVisible(true);
 }
 
+
+
+
         
-void inic_minigry_zwi(){
-    
-    minigra3=new Zwiazki_chem();
-    okno_zwi = new Okno("Zwiazki chemiczne");
-    zatwierdz_zwi = new Button("Zatwierdż");
-    
-    okno_zwi.add(minigra3);
-    
-    okno_zwi.addMouseListener(new MouseAdapter(){
-        @Override
-        public void mouseClicked(MouseEvent mezwi){
-        KM_zwi=mezwi.getPoint();
+    void inic_minigry_zwi(){
+
+        minigra3=new Zwiazki_chem();
+        okno_zwi = new Okno("Zwiazki chemiczne");
+        zatwierdz_zwi = new Button("Zatwierdż");
+        zatwierdz_zwi.setBounds(679,8,szerokosc_przyc,wysokosc_przyc);
+        zatwierdz_zwi.setFont(czcinka);
+        zatwierdz_zwi.addActionListener(new B3());
+        okno_zwi.add(minigra3);
+        minigra3.add(zatwierdz_zwi);
+        minigra3.setLayout(null);
+        
+        EventQueue.invokeLater(() -> {
+                okno_zwi.repaint();
+
+       });
+
+        okno_zwi.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent mezwi){
+            KM_zwi=mezwi.getPoint();
 
 
-        if(mezwi.getButton()==MouseEvent.BUTTON1){//kliknieto lewy
-            minigra3.kliknietolewy(KM_zwi);
-            okno_zwi.repaint();
-            System.out.println("adasdsad");
+            if(mezwi.getButton()==MouseEvent.BUTTON1){//kliknieto lewy
+                minigra3.kliknietolewy(KM_zwi);
+                okno_zwi.repaint();
+
+            }
+            
+            if(mezwi.getButton()==MouseEvent.BUTTON2){//kliknieto prawy
+               inic_pomoc(pomoc_zwi);
+            }
+            
+            if(mezwi.getButton()==MouseEvent.BUTTON3){//kliknieto prawy
+                minigra3.kliknietoprawy();
+                okno_zwi.repaint();
+            }
+            }
+        });
+        
+        okno_zwi.addKeyListener(new KeyAdapter(){
+        @Override   
+        public void keyPressed(KeyEvent ke){
+
+               if(ke.getKeyCode()==ke.VK_M){
+                   inic_pomoc(pomoc_zwi);
+               }
         }
-        if(mezwi.getButton()==MouseEvent.BUTTON3){//kliknieto prawy
-            minigra3.kliknietoprawy();
-            okno_zwi.repaint();
-        }
-        }
-    });
-    
-    
-    
-    
-    
- }          
+        });
+        
+        okno_zwi.setVisible(true);
+     } 
+
+    void wyjscie(){
+        okno_gr.setVisible(false);
+        okno_gr.dispose();
+        System.exit(0);
+    }
+
+
+
     private class B1 implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Tlo.sumapunkt=+minigra1.zatwierdz();
-                System.out.println(Tlo.sumapunkt);
-                okno_wz.setVisible(false);//??
+
+                okno_wz.setVisible(false);
+                okno_wz.dispose();
             }
     }
+    
+    
+    
     
     private class B2 implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Tlo.sumapunkt=+minigra2.zatwierdz();
-                System.out.println(Tlo.sumapunkt);
-                okno_roz.setVisible(false);//??
+
+                okno_roz.setVisible(false);
+                okno_roz.dispose();
             }
     }
     
     
-     public boolean sprawdzkolizje (boolean gora, boolean dol, boolean lewo, boolean prawo){
+    
+    
+    
+    private class B3 implements ActionListener {
+        
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Tlo.sumapunkt=+minigra3.zatwierdz();
+
+                okno_zwi.setVisible(false);
+                okno_zwi.dispose();
+            }
+    }
+    
+    
+    
+    public int odlegloscdokwa (int x1,int y1,int x2,int y2){
+        
+        return ((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+        
+    }
+    
+    
+    
+    
+    
+    public boolean sprawdzkolizje (boolean gora, boolean dol, boolean lewo, boolean prawo){
         int odl_do_s=0;
         int min_do_s=(Postac.srednica_ciala/2)*(Postac.srednica_ciala/2);
         
-         //System.out.println("halo kolizja???");
+
         
         if(gora){
             
-           // System.out.println("kolizja gora???");
+
             
             for(int i=0;i<lista_obiekt.size();i++){
                 
                  if( ( lista_obiekt.get(i).p_x[2]<( Postac.srodek_x))&& (Postac.srodek_x < lista_obiekt.get(i).p_x[3] )){
-                     //System.out.println("kolizja???");
+
                      
                      if( Postac.srodek_y-Postac.srednica_ciala/2-krok_chodz<lista_obiekt.get(i).p_y[2]){
                          if(Postac.srodek_y>lista_obiekt.get(i).p_y[2]){
-                           // System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).p_y[2]);
+
                             return true;
                          }
                     
@@ -312,9 +471,9 @@ void inic_minigry_zwi(){
                  else if((Postac.srodek_x+Postac.srednica_ciala/2>lista_obiekt.get(i).p_x[2])&&(Postac.srodek_x-Postac.srednica_ciala/2<lista_obiekt.get(i).p_x[3])){
                       
                       odl_do_s=odlegloscdokwa (Postac.srodek_x,Postac.srodek_y,lista_obiekt.get(i).p_x[2],lista_obiekt.get(i).p_y[2]);
-                      System.out.println("kolizjarog???? i:"+i+" odl "+odl_do_s+" min "+min_do_s); 
+
                       if(odl_do_s <min_do_s){
-                          System.out.println("!!!!!!!!!kolizjarog!!!");
+
                           return true;
                       }
                          
@@ -322,9 +481,9 @@ void inic_minigry_zwi(){
                       else{  
                           
                           odl_do_s=odlegloscdokwa(Postac.srodek_x,Postac.srodek_y,lista_obiekt.get(i).p_x[3],lista_obiekt.get(i).p_y[3]);
-                          System.out.println("kolizjarog2 i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+
                           if ( odl_do_s<min_do_s){
-                              System.out.println("!!!!!!!!!kolizjarog!!!");
+
                               return true;
                           };
                       }
@@ -334,16 +493,16 @@ void inic_minigry_zwi(){
         }
         
         if(dol){
-            System.out.println("kolizja dol???");
+
             
             for(int i=0;i<lista_obiekt.size();i++){
                 
                  if( ( lista_obiekt.get(i).p_x[0]<( Postac.srodek_x))&& (Postac.srodek_x < lista_obiekt.get(i).p_x[1] )){
-                     System.out.println("kolizja???");
+
                      
                      if( Postac.srodek_y+Postac.srednica_ciala/2+krok_chodz>lista_obiekt.get(i).p_y[0]){
                          if(Postac.srodek_y<lista_obiekt.get(i).p_y[0]){//jak nie przeszedł jeszcze przez linie
-                            System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).p_y[0]);
+
                             return true;
                          }
                      
@@ -352,10 +511,10 @@ void inic_minigry_zwi(){
                  else if((Postac.srodek_x+Postac.srednica_ciala/2>lista_obiekt.get(i).p_x[0])&&(Postac.srodek_x-Postac.srednica_ciala/2<lista_obiekt.get(i).p_x[1])){
                       
                       odl_do_s=odlegloscdokwa (Postac.srodek_x,Postac.srodek_y,lista_obiekt.get(i).p_x[0],lista_obiekt.get(i).p_y[0]);
-                      System.out.println("kolizjarog???? i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+
                       
                       if(odl_do_s <min_do_s){
-                          System.out.println("!!!!!!!!!kolizjarog!!!");
+
                           return true;
                       }
                          
@@ -363,10 +522,10 @@ void inic_minigry_zwi(){
                       else{  
                           
                           odl_do_s=odlegloscdokwa(Postac.srodek_x,Postac.srodek_y,lista_obiekt.get(i).p_x[1],lista_obiekt.get(i).p_y[1]);
-                          System.out.println("kolizjarog2 i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+
                           
                           if ( odl_do_s<min_do_s){
-                              System.out.println("!!!!!!!!!kolizjarog!!!");
+
                               return true;
                           };
                       }
@@ -376,16 +535,16 @@ void inic_minigry_zwi(){
         
 
         if(lewo){
-            System.out.println("kolizja lewo???");
+
             
             for(int i=0;i<lista_obiekt.size();i++){
                 
                 if( ( lista_obiekt.get(i).p_y[1]<( Postac.srodek_y))&& (Postac.srodek_y < lista_obiekt.get(i).p_y[3] )){
-                     System.out.println("kolizja???");
+
                      
                     if( Postac.srodek_x-Postac.srednica_ciala/2-krok_chodz<lista_obiekt.get(i).p_x[1]){
                          if(Postac.srodek_x>lista_obiekt.get(i).p_x[1]){
-                            System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).p_x[1]);
+
                             return true;
                          }
                      
@@ -395,10 +554,10 @@ void inic_minigry_zwi(){
                 else if((Postac.srodek_y+Postac.srednica_ciala/2>lista_obiekt.get(i).p_y[1])&&(Postac.srodek_y-Postac.srednica_ciala/2<lista_obiekt.get(i).p_y[3])){
                       
                       odl_do_s=odlegloscdokwa (Postac.srodek_x,Postac.srodek_y,lista_obiekt.get(i).p_x[1],lista_obiekt.get(i).p_y[1]);
-                      System.out.println("kolizjarog???? i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+
                       
                       if(odl_do_s <min_do_s){
-                          System.out.println("!!!!!!!!!kolizjarog!!!");
+
                           return true;
                       }
                          
@@ -406,10 +565,10 @@ void inic_minigry_zwi(){
                       else{  
                           
                           odl_do_s=odlegloscdokwa(Postac.srodek_x,Postac.srodek_y,lista_obiekt.get(i).p_x[3],lista_obiekt.get(i).p_y[3]);
-                          System.out.println("kolizjarog2 i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+
                           
                           if ( odl_do_s<min_do_s){
-                              System.out.println("!!!!!!!!!kolizjarog!!!");
+
                               return true;
                           };
                       }
@@ -419,16 +578,16 @@ void inic_minigry_zwi(){
         
         
          if(prawo){
-            System.out.println("kolizja prawo???");
+
             
             for(int i=0;i<lista_obiekt.size();i++){
                 
                 if( ( lista_obiekt.get(i).p_y[0]<( Postac.srodek_y))&& (Postac.srodek_y < lista_obiekt.get(i).p_y[2] )){
-                     System.out.println("kolizja???");
+
                      
                     if( Postac.srodek_x+Postac.srednica_ciala/2+krok_chodz>lista_obiekt.get(i).p_x[0]){
                          if(Postac.srodek_x<lista_obiekt.get(i).p_x[0]){
-                            System.out.println("kolizja!!!!!!!!!!!!!"+lista_obiekt.get(i).p_x[0]);
+
                             return true;
                          }
                      
@@ -437,10 +596,10 @@ void inic_minigry_zwi(){
                 else if((Postac.srodek_y+Postac.srednica_ciala/2>lista_obiekt.get(i).p_y[0])&&(Postac.srodek_y-Postac.srednica_ciala/2<lista_obiekt.get(i).p_y[2])){
                       
                       odl_do_s=odlegloscdokwa (Postac.srodek_x,Postac.srodek_y,lista_obiekt.get(i).p_x[0],lista_obiekt.get(i).p_y[0]);
-                      System.out.println("kolizjarog???? i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+
                       
                       if(odl_do_s <min_do_s){
-                          System.out.println("!!!!!!!!!kolizjarog!!!");
+
                           return true;
                       }
                          
@@ -448,10 +607,10 @@ void inic_minigry_zwi(){
                       else{  
                           
                           odl_do_s=odlegloscdokwa(Postac.srodek_x,Postac.srodek_y,lista_obiekt.get(i).p_x[2],lista_obiekt.get(i).p_y[2]);
-                          System.out.println("kolizjarog2 i:"+i+" odl "+odl_do_s+" min "+min_do_s);
+
                           
                           if ( odl_do_s<min_do_s){
-                              System.out.println("!!!!!!!!!kolizjarog!!!");
+
                               return true;
                           };
                       }
@@ -461,12 +620,5 @@ void inic_minigry_zwi(){
         
     return false;
     }
-  
-    
-    
-    public int odlegloscdokwa (int x1,int y1,int x2,int y2){
-        
-        return ((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
-        
-    }
+
 }

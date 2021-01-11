@@ -4,18 +4,12 @@
  * and open the template in the editor.
  */
 package projekt;
-import java.lang.String;
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.*;
-import java.awt.event.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.awt.image.BufferedImage;
 
 
 public class Wzory extends JPanel {
+    
     int odchylka_x=0;
     int odchylka_y=0;
     
@@ -56,24 +50,11 @@ public class Wzory extends JPanel {
         rozw[2]="K2O";
         rozw[3]="NaO";
 
-        
-        
         odp1.setBounds(pozycja_wz1_x,pozycja_wz1_y,szerokosc_wz,wysokosc_wz);
         odp2.setBounds(pozycja_wz2_x,pozycja_wz2_y,szerokosc_wz,wysokosc_wz);
         odp3.setBounds(pozycja_wz3_x,pozycja_wz3_y,szerokosc_wz,wysokosc_wz);
         odp4.setBounds(pozycja_wz4_x,pozycja_wz4_y,szerokosc_wz,wysokosc_wz);
-        /*try{
-            BufferedImage myImage = ImageIO.read(new File("src/res/tlo1.jpg"));
-            okno_wz.setContentPane(new Tlo(myImage));
-        }
-            
-        catch(IOException e){
-            System.out.println("error");
-        }
-        */
-        
-        
-        
+ 
         setLayout(null);
         
         add(odp1);
@@ -81,20 +62,16 @@ public class Wzory extends JPanel {
         add(odp3);
         add(odp4);
         setVisible(true);
-        
-       
+          
         
    }
     
     
- //wczytywanie grafiki 
 
- //sprawdzanie tekstu
- //wyświetlanie wyników
-    
     
     
     int zatwierdz(){
+        
         int suma=0;
         str_odp[0]=odp1.getText();
         str_odp[1]=odp2.getText();
@@ -111,6 +88,11 @@ public class Wzory extends JPanel {
         System.out.println("error "+suma);
         return suma;
     }
+    
+    
+    
+    
+    
     @Override
     protected void paintComponent(Graphics g){
         
